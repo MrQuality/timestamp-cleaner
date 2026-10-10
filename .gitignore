@@ -1,5 +1,6 @@
 # Rust build output and rustfmt backups. Keep Cargo.lock tracked for this app.
 /target/
+/dist/
 **/*.rs.bk
 
 # Local developer tools, audit reports and logs belong here.
