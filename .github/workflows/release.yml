@@ -29,10 +29,22 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
+      actions: read
     steps:
+      - name: Locate the successful Windows package in this run
+        id: package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A partial retry may reuse quality jobs from an earlier attempt.
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+            --paginate --jq '.artifacts[] | select(.name | startswith("windows-portable-")) | select(.expired == false) | .id' > artifact-ids.txt
+          artifact_id=$(sort -n artifact-ids.txt | tail -n 1)
+          [[ "$artifact_id" =~ ^[0-9]+$ ]] || { echo 'Windows package artifact is missing'; exit 1; }
+          echo "id=$artifact_id" >> "$GITHUB_OUTPUT"
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: windows-portable-${{ github.run_attempt }}
+          artifact-ids: ${{ steps.package.outputs.id }}
           path: dist
       - name: Verify downloaded ZIP checksum
         working-directory: dist

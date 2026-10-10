@@ -17,8 +17,10 @@ The **Windows portable release** workflow has two entry points:
   to rerun the same quality workflow and create a **draft prerelease** with the
   ZIP and checksum attached. The tagged commit must already be part of main.
 
-Only the draft job has repository write permission. It downloads the artifact
-from its own workflow run, verifies its checksum and never executes the binary.
+Only the draft job has repository write permission. It resolves the newest unexpired
+Windows package artifact ID within its own workflow run, verifies its checksum and
+never executes the binary. Resolution uses read-only Actions access; partial retries
+can reuse a successful producer's earlier-attempt artifact without guessing its name.
 Actions are pinned by full revision; checkout does not retain Git credentials.
 Existing releases/assets are not overwritten. A rerun with an existing draft
 will fail at creation; inspect the existing draft rather than silently replacing it.
