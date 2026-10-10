@@ -9,7 +9,7 @@ Cargo.toml and Cargo.lock record the direct and resolved dependencies. The deskt
 uses eframe/egui, including its default fonts, rfd and platform libraries, plus the
 image and media-support crates. A vulnerability audit is **not** a license audit.
 
-The [generated inventory](docs/dependency-licenses.csv) covers 376 external packages
+The [generated inventory](docs/dependency-licenses.csv) covers 333 external packages
 resolved by `cargo metadata --locked --all-features`, including packages for targets
 and optional dependencies that may not be part of a particular binary. Every row
 records the declared license, version, source/repository, lockfile fingerprint and
@@ -19,6 +19,12 @@ packaged notice-file hashes. No absolute cache paths are published.
 registry/Git sources. Cargo-deny 0.20.2 passes `--locked --all-features check licenses
 sources` without warnings for the current graph. SPDX declaration checks do not
 inspect every embedded source/font notice and do not establish legal clearance.
+
+The rfd 0.17.2 upgrade replaces the former Rust D-Bus/async dependency stack on Linux
+with calls to the system-provided libdbus library. The inventory includes both rfd's
+MIT license and its nested window-identifier MIT notice. System D-Bus and desktop
+portal components are not bundled; their distribution terms need separate review
+if a future installer starts redistributing them.
 
 Forty-eight packages have no conventional license/notice file in the downloaded
 crate. Upstream licensing documents have been preserved for 46 of them, fetched

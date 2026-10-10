@@ -3,6 +3,10 @@
 Recorded on 2026-10-10. This is evidence for preparing a development source
 repository, not certification of a production release or legal clearance.
 
+The local audit below is a historical snapshot. Public setup was subsequently
+authorized by the owner and applied to [MrQuality/timestamp-cleaner](https://github.com/MrQuality/timestamp-cleaner).
+Current policy is recorded in [repository-settings.md](repository-settings.md).
+
 ## History and privacy
 
 The audited application source/history tip is `06daae7`; Gitleaks 8.30.1 scanned
@@ -91,11 +95,45 @@ and full-history secret scanning. Actions use immutable commits, checkout does
 not persist credentials, and each job has a timeout. Workflow configuration and
 local checks do not establish hosted-runner results.
 
-Before publication, the owner still needs to confirm ownership/public identity,
+At the local-audit checkpoint, the owner still needed to confirm ownership/public identity,
 choose the GitHub URL, enable and verify private reporting, configure repository
-security/branch rules, and inspect actual hosted CI results. Follow
+security/branch rules, and inspect actual hosted CI results. Those configuration tasks
+are now applied as recorded in [repository-settings.md](repository-settings.md). Follow
 [the readiness checklist](open-source-readiness.md). Release signing, installers,
 native appearance and the production roadmap remain separate gates.
+
+## Public GitHub execution
+
+The owner authorized creation of the public repository on their authenticated account,
+retaining existing history, artwork and license. Public author metadata was not rewritten.
+Before the initial push, Gitleaks scanned all 19 commits with zero findings; subsequent
+CI-configuration history through 21 commits was also clean. The Git client initially
+failed certificate-chain validation with its OpenSSL store. Selecting the Windows
+certificate backend fixed publication while retaining TLS verification; that choice is
+scoped to this local clone.
+
+The [initial hosted run](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38067432600)
+passed both Rust 1.92 checks, advisory/license/source/inventory/workflow/secret checks,
+and the full Linux quality job. Its Linux log records 20 library, three UI and nine
+real-media tests passing, plus a successful release build. Windows passed formatting,
+strict Clippy, 23 library/UI tests and eight of nine media tests. The timeout/cancellation
+regression stalled; the run was cancelled for diagnosis before its Windows release build.
+This run is not an all-green result.
+
+The Windows installation log showed Chocolatey launcher shims. CI now locates exactly
+one actual package FFmpeg binary, requires its sibling FFprobe and sets explicit tool
+overrides. Resolver verification covered paths with spaces and missing, ambiguous and
+incomplete packages; an inverted-count guard was rejected. The immediate-child versus
+process-tree supervision limitation is documented in SECURITY.md and the tool setup guide.
+The cancellation regression remains unchanged.
+
+[PR #3](https://github.com/MrQuality/timestamp-cleaner/pull/3) validates the corrected
+Windows setup and repository handoff. It must pass all seven required checks with no
+required approving review or administrator bypass. Its Checks tab records the exact
+tested commit, logs and outcome; subsequent `main` runs verify the merged tree.
+Repository protections, automation and community settings were read back from GitHub;
+see [repository-settings.md](repository-settings.md). The public dependency graph API
+returned 379 packages. No private footage or developer-tool folders were uploaded.
 
 ## Reproduce the main audit checks
 

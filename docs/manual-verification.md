@@ -27,3 +27,23 @@ and audio export remains valid evidence for that smoke test only.
 
 Follow [manual recovery instructions](media-tools.md) when automatic setup fails.
 Publishing a development source repository does not imply these release gates pass.
+
+## Native-dialog upgrade: PR #2
+
+The rfd 0.17.2 update changes Linux portal internals and the Windows native bindings.
+The application still uses the same `FileDialog` open/save methods. Automated layout
+and media tests do not operate the native picker. These checks remain **pending** on
+both Windows and a Linux desktop with its portal backend (and separately with zenity
+fallback if that configuration is supported):
+
+1. Open a synthetic video whose path contains spaces and non-ASCII characters;
+   confirm the selected file loads and previews correctly.
+2. Cancel the open dialog and then the save dialog; confirm the current video,
+   selection and filesystem remain unchanged and no media job begins.
+3. Export MKV and MP4 through their save dialogs. Confirm filename suggestions,
+   filters and output extensions match the selection; verify an existing destination
+   is protected and exported video/audio play correctly.
+
+Record the tested commit, OS, desktop/portal or fallback backend, filenames used and
+observed results in VALIDATION.md. This smoke test can supplement CI; it does not
+replace the broader clean-installation, accessibility or performance release checks.

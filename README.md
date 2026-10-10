@@ -73,6 +73,11 @@ Install compatible media tools using [the setup guide](docs/media-tools.md); old
 packages may fail the startup capability checks. Windows and Linux are the current targets;
 macOS is not validated.
 
+The Linux file picker uses the system D-Bus library (`libdbus-1-3` on Ubuntu), a
+session bus and an XDG desktop portal with your desktop's backend. Install these
+through your distribution if they are missing. `zenity` provides a fallback when
+portal dialogs are unavailable. Headless build/media tests do not verify these dialogs.
+
 Open a video, drag over its timestamp, render a preview, and toggle Original / Repaired.
 Numeric controls allow precise source-pixel selection. Select export quality and export
 one result. Changing the rectangle invalidates the previous repair preview. All media work
@@ -126,7 +131,7 @@ On Linux the desktop build also needs the platform development packages listed i
 See [SECURITY.md](SECURITY.md) for the threat model and [docs/architecture.md](docs/architecture.md)
 for pipeline design and limitations. The earlier Python scripts remain untouched outside this repository.
 
-## License and publication
+## License
 
 Original project code and documentation are licensed under [Apache License 2.0](LICENSE).
 The generated icon's provenance and licensing scope are recorded in [assets/README.md](assets/README.md).

@@ -106,6 +106,13 @@ or choose **Check again** after installing into an existing PATH location.
 
 ## Both tools exist but processing still fails
 
+If you installed through Chocolatey, use the actual binaries in its FFmpeg package
+directory rather than `ChocolateyInstall/bin/ffmpeg.exe` and `ffprobe.exe` launcher
+shims. Set the explicit overrides described above to the package's actual executable
+paths. The current supervisor terminates its immediate child; a launcher can leave
+FFmpeg running with open pipes and block cancellation or timeout cleanup. CI resolves
+the package binaries directly. Process-tree supervision remains a production gate.
+
 Startup checks establish executable identity, the basic repair/timing pipeline and
 FFprobe's required side-data schema. They do not prove compatibility with every input
 codec. This application requires `libx264`, `delogo`, `lavfi`, PNG encoding and the
