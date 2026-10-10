@@ -8,3 +8,5 @@
 *.csv text eol=lf
 # Preserve upstream notice bytes so provenance hashes remain portable.
 third-party/** -text
+# Upstream license files keep their original final blank lines as well.
+third-party/upstream/** whitespace=-blank-at-eof

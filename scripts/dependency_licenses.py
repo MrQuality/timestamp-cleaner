@@ -16,6 +16,14 @@ OUTPUT = ROOT / "docs" / "dependency-licenses.csv"
 
 def inventory():
     lock_hash = hashlib.sha256((ROOT / "Cargo.lock").read_bytes()).hexdigest()
+    upstream = {}
+    for record in json.loads((ROOT / "third-party/upstream-provenance.json").read_text(encoding="utf-8")):
+        for file in record["files"]:
+            actual = hashlib.sha256((ROOT / file["file"]).read_bytes()).hexdigest()
+            if actual != file["sha256"]:
+                raise ValueError(f"Upstream notice digest mismatch: {file['file']}")
+        for package in record["packages"]:
+            upstream[package] = record
     metadata = json.loads(
         subprocess.check_output(
             ["cargo", "metadata", "--locked", "--all-features", "--format-version", "1"],
@@ -27,6 +35,12 @@ def inventory():
         if package["id"] in metadata["workspace_members"]:
             continue
         directory = Path(package["manifest_path"]).parent
+        record = upstream.get(f"{package['name']} {package['version']}")
+        supplemental = record["files"] if record else []
+        if record:
+            vcs = json.loads((directory / ".cargo_vcs_info.json").read_text(encoding="utf-8"))
+            if vcs["git"]["sha1"] != record["commit"]:
+                raise ValueError(f"Upstream commit mismatch: {package['name']}")
         notices = []
         for path in sorted(directory.rglob("*"), key=lambda p: p.relative_to(directory).as_posix()):
             relative = path.relative_to(directory)
@@ -50,7 +64,13 @@ def inventory():
                 "lockfile_sha256": lock_hash,
                 "repository": package.get("repository") or "",
                 "packaged_notice_files": ";".join(notices),
-                "notice_status": "packaged-files-found" if notices else "upstream-review-needed",
+                "upstream_notice_files": ";".join(
+                    f"{file['file']}@sha256:{file['sha256']}" for file in supplemental
+                ),
+                "notice_status": (
+                    "packaged-files-found" if notices else
+                    "upstream-documents-found" if supplemental else "upstream-review-needed"
+                ),
             }
         )
     output = io.StringIO(newline="")

@@ -21,9 +21,22 @@ sources` without warnings for the current graph. SPDX declaration checks do not
 inspect every embedded source/font notice and do not establish legal clearance.
 
 Forty-eight packages have no conventional license/notice file in the downloaded
-crate and are marked `upstream-review-needed`. egui/font terms have separately
-been preserved in [third-party/](third-party/README.md) using exact source provenance;
-Hack's notice includes Bitstream Vera terms beyond the aggregate SPDX declaration.
+crate. Upstream licensing documents have been preserved for 46 of them, fetched
+from the exact commits recorded in the registry packages' `.cargo_vcs_info.json`.
+The inventory records these separately as `upstream-documents-found` and verifies
+their hashes and commit provenance. `dispatch` 0.2.0 and `hexf-parse` 0.2.1 remain
+`upstream-review-needed`: no standalone license document was found at those commits.
+Neither appears in the current all-feature Windows x64 or Linux x64 dependency tree.
+Review them before enabling features/targets that use them or distributing a
+broader dependency/source bundle.
+
+egui/font terms are also preserved in [third-party/](third-party/README.md).
+Hack's notice includes Bitstream Vera terms beyond the aggregate SPDX declaration;
+AccessKit's upstream Chromium attribution is preserved too. The objc2 upstream
+documents raise Apple SDK-derived licensing questions: Apple targets are outside
+the current Windows/Linux support scope and need separate review before support.
+An upstream licensing document may link to terms rather than contain a full
+redistribution notice. Presence of a document is not clearance for that artifact.
 The inventory is **not a completed distribution notice bundle**. Before distributing
 binaries, enumerate the exact locked graph for each release
 target and feature set, inspect the included license and NOTICE files (including
