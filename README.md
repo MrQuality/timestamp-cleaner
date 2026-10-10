@@ -23,8 +23,11 @@ Numeric controls allow precise source-pixel selection. Select export quality and
 one result. Changing the rectangle invalidates the previous repair preview. All media work
 runs off the UI thread; Cancel and closing the app terminate the active media subprocess.
 
-Exports use H.264 in Matroska (`.mkv`), copy all audio tracks without re-encoding, and retain
-variable frame timing through the native FFmpeg pipeline. Existing outputs are never replaced.
+Select Matroska (`.mkv`) or MP4 (`.mp4`) before exporting. Both use H.264 and retain variable
+frame timing through the native FFmpeg pipeline. MKV copies all audio tracks without re-encoding.
+MP4 copies AAC/MP3 tracks and converts other audio codecs to AAC at 192 kbps per track for
+playback compatibility. MP4 faststart places playback metadata before the video data.
+The output extension must match the selected format. Existing outputs are never replaced.
 Only the first non-attached-picture video stream is processed. Subtitle, data, and additional
 video streams are not exported in this milestone. Source metadata and chapters are requested
 from FFmpeg, but preservation of every container-specific field is not guaranteed.

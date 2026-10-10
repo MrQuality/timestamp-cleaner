@@ -19,7 +19,7 @@ a usable native GUI and a media pipeline; it is not the completed product.
 
 - [ ] Detect each required media tool at startup and offer installation with explicit consent.
 - [ ] Keep media operations disabled when dependencies are missing or installation is declined.
-- [ ] Select MKV or MP4 with explicit audio compatibility behavior.
+- [x] Select MKV or MP4 with explicit audio compatibility behavior.
 
 ## Algorithm parity and mask editor
 
@@ -36,7 +36,7 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - Rotation, sample-aspect-ratio and color metadata handling; explicit HDR/alpha policy.
 - Image workflow with EXIF orientation, ICC and supported bit-depth policies.
 - Versioned projects, reusable timestamp masks and sequential batch queue.
-- Output MP4 option with explicit codec compatibility and audio conversion choices.
+- Additional output codecs and configurable audio conversion settings.
 - Metadata privacy control; subtitle/additional video stream preservation policy.
 - OS-enforced subprocess memory/CPU limits and strengthened executable provenance checks.
 - Representative 1080p/4K performance baselines, cancellation latency and long-video soak tests.

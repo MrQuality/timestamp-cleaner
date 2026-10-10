@@ -34,6 +34,7 @@ pub struct App {
     region: Region,
     drag_start: Option<Pos2>,
     quality: Quality,
+    format: OutputFormat,
     seek: f64,
     shown_time: f64,
     show_repaired: bool,
@@ -62,6 +63,7 @@ impl Default for App {
             },
             drag_start: None,
             quality: Quality::default(),
+            format: OutputFormat::default(),
             seek: 0.0,
             shown_time: 0.0,
             show_repaired: false,
@@ -183,16 +185,17 @@ impl App {
             return;
         };
         let name = format!(
-            "{}_cleaned.mkv",
+            "{}_cleaned.{}",
             source
                 .path
                 .file_stem()
                 .unwrap_or_default()
-                .to_string_lossy()
+                .to_string_lossy(),
+            self.format.extension()
         );
         if let Some(destination) = rfd::FileDialog::new()
             .set_file_name(name)
-            .add_filter("Matroska video", &["mkv"])
+            .add_filter(self.format.label(), &[self.format.extension()])
             .save_file()
         {
             let request = ExportRequest {
@@ -200,7 +203,7 @@ impl App {
                 destination,
                 region: self.region,
                 quality: self.quality,
-                format: OutputFormat::Mkv,
+                format: self.format,
             };
             self.start("Exporting one selected repair…", move |cancel, tx| {
                 Ok(Completion::Exported(export::export(
@@ -304,6 +307,13 @@ impl App {
                 });
             });
             ui.separator();
+            egui::ComboBox::from_label("Output format")
+                .selected_text(self.format.label())
+                .show_ui(ui, |ui| {
+                    for format in OutputFormat::ALL {
+                        ui.selectable_value(&mut self.format, format, format.label());
+                    }
+                });
             egui::ComboBox::from_label("Export quality")
                 .selected_text(self.quality.label())
                 .show_ui(ui, |ui| {
@@ -311,7 +321,10 @@ impl App {
                         ui.selectable_value(&mut self.quality, quality, quality.label());
                     }
                 });
-            ui.small("H.264 / MKV · source audio copied · source timing retained");
+            ui.small(match self.format {
+                OutputFormat::Mkv => "H.264 / MKV · all source audio copied · source timing retained",
+                OutputFormat::Mp4 => "H.264 / MP4 · AAC/MP3 copied; other audio converted to AAC · source timing retained",
+            });
             if ui
                 .add_enabled(
                     validation.is_ok(),
@@ -468,7 +481,12 @@ mod tests {
     fn desktop_layout_handles_empty_and_loaded_states() {
         let ctx = egui::Context::default();
         let mut app = App::default();
-        for loaded in [false, true] {
+        for (loaded, format) in [
+            (false, OutputFormat::Mkv),
+            (true, OutputFormat::Mkv),
+            (true, OutputFormat::Mp4),
+        ] {
+            app.format = format;
             if loaded {
                 app.source = Some(Media {
                     path: "family.mp4".into(),
