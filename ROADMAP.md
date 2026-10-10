@@ -62,6 +62,17 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] Enforce Windows/Linux CI on GitHub, inspect initial results and require passing checks before merge.
 - [ ] Embed the Windows executable/installer icon resource and inspect native appearance.
 
+## First Windows portable beta
+
+- [x] ZIP packaging with verified Windows dependency notice copies, build metadata and checksums.
+- [x] Actions preview artifacts and beta-tag draft release automation; public publication remains manual.
+- [ ] Inspect the first hosted packaged artifact and complete its target-specific notice review.
+- [ ] Embed executable branding/version resources and verify clean-host runtime dependencies.
+- [ ] Complete clean-Windows/manual artifact gates and publish `v0.1.0-beta.1`.
+
+See [release instructions](docs/releases.md). ZIP delivery is the current scope;
+MSI/installers, code signing and Linux packages are deferred.
+
 Follow [the publication checklist](docs/open-source-readiness.md) for evidence and the
 distinction between publishing development source and distributing production binaries.
 

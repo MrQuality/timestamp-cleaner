@@ -18,7 +18,7 @@ not prevent hosting the application source on GitHub.
 - [x] Manual dependency recovery and outstanding verification scenarios are documented.
 - [x] Application artwork and its provenance are tracked in the project.
 - [x] Full-history secret scan and local privacy review; owner identity/rights decisions remain separate.
-- [x] Reproducible 376-package license inventory, source/license policy and upstream notice research.
+- [x] Reproducible 333-package license inventory, source/license policy and upstream notice research.
 - [x] Clean-checkout Rust 1.92 testing on Windows/Linux, including real media; release and lint checks.
 - [x] CI minimum-Rust, license/source, inventory, secret-scan and workflow-syntax gates.
 - [x] Privacy-aware issue templates and basic contributor collaboration expectations.
