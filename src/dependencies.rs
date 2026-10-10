@@ -131,18 +131,70 @@ fn resolve(
 }
 
 fn verify(name: &str, path: &Path, cancel: &Cancellation) -> Result<()> {
-    let bytes = process::run(
-        Command::new(path).arg("-version"),
-        cancel,
-        Duration::from_secs(10),
-        64 * 1024,
-        None,
-    )?;
+    verify_with(name, path, |command| {
+        process::run(command, cancel, Duration::from_secs(10), 64 * 1024, None)
+    })
+}
+
+fn verify_with(
+    name: &str,
+    path: &Path,
+    mut run: impl FnMut(&mut Command) -> Result<Vec<u8>>,
+) -> Result<()> {
+    let bytes = run(Command::new(path).arg("-version"))?;
     if !bytes.starts_with(format!("{name} version ").as_bytes()) {
         return Err(Error::Invalid(format!(
             "{} did not identify itself as {name}",
             path.display()
         )));
+    }
+    if name == "ffmpeg" {
+        // Exercise the actual timing options rather than guessing capabilities from
+        // release/nightly version strings. One synthetic frame is discarded in memory.
+        let mut command = Command::new(path);
+        command.args([
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-f",
+            "lavfi",
+            "-i",
+            "color=size=16x16:rate=1",
+            "-frames:v",
+            "1",
+            "-filter_threads",
+            "1",
+            "-vf",
+            "delogo=x=4:y=4:w=4:h=4",
+            "-c:v",
+            "libx264",
+            "-threads",
+            "1",
+            "-fps_mode",
+            "passthrough",
+            "-enc_time_base",
+            "demux",
+            "-f",
+            "null",
+            "-",
+        ]);
+        run(&mut command).map_err(|error| match error {
+            Error::Cancelled => Error::Cancelled,
+            error => Error::Invalid(format!(
+                "FFmpeg cannot run the required repair/timing pipeline. Install a current build with libx264, delogo and lavfi support. Details: {error}"
+            )),
+        })?;
+    } else if name == "ffprobe" {
+        let sections = run(Command::new(path).args(["-v", "error", "-sections"]))?;
+        if !sections
+            .split(u8::is_ascii_whitespace)
+            .any(|word| word.rsplit(|b| *b == b'/').next() == Some(b"stream_side_data"))
+        {
+            return Err(Error::Invalid(
+                "FFprobe lacks the stream_side_data schema required for rotation checks. Install a current FFmpeg/FFprobe package.".into(),
+            ));
+        }
     }
     Ok(())
 }
@@ -150,6 +202,80 @@ fn verify(name: &str, path: &Path, cancel: &Cancellation) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn a_valid_version_banner_does_not_enable_an_incompatible_ffmpeg() {
+        let mut calls = 0;
+        let error = verify_with("ffmpeg", Path::new("ffmpeg"), |_| {
+            calls += 1;
+            if calls == 1 {
+                Ok(b"ffmpeg version 4.4.2".to_vec())
+            } else {
+                Err(Error::Invalid("Unrecognized option fps_mode".into()))
+            }
+        })
+        .unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("required repair/timing pipeline")
+        );
+        assert_eq!(calls, 2);
+    }
+
+    #[test]
+    fn executable_identity_is_required_and_capability_cancellation_is_preserved() {
+        let mut calls = 0;
+        assert!(
+            verify_with("ffmpeg", Path::new("wrong-tool"), |_| {
+                calls += 1;
+                Ok(b"another tool".to_vec())
+            })
+            .is_err()
+        );
+        assert_eq!(calls, 1);
+        let mut calls = 0;
+        assert!(matches!(
+            verify_with("ffmpeg", Path::new("ffmpeg"), |_| {
+                calls += 1;
+                if calls == 1 {
+                    Ok(b"ffmpeg version N-114971".to_vec())
+                } else {
+                    Err(Error::Cancelled)
+                }
+            }),
+            Err(Error::Cancelled)
+        ));
+        assert!(
+            verify_with("ffmpeg", Path::new("ffmpeg"), |command| {
+                if command.get_args().any(|a| a == "-version") {
+                    Ok(b"ffmpeg version N-114971".to_vec())
+                } else {
+                    Ok(Vec::new())
+                }
+            })
+            .is_ok()
+        );
+    }
+
+    #[test]
+    fn ffprobe_requires_the_actual_stream_side_data_section() {
+        for (sections, supported) in [
+            (".... side_data/stream_side_data", true),
+            (".... stream_side_data", true),
+            (".... side_data_list/stream_side_data_list", false),
+            (".... side_data/frame_side_data", false),
+        ] {
+            let result = verify_with("ffprobe", Path::new("ffprobe"), |command| {
+                if command.get_args().any(|a| a == "-version") {
+                    Ok(b"ffprobe version 8.1".to_vec())
+                } else {
+                    Ok(sections.as_bytes().to_vec())
+                }
+            });
+            assert_eq!(result.is_ok(), supported, "{sections}");
+        }
+    }
+
     #[test]
     fn discovers_components_independently() {
         let report = DependencyReport {

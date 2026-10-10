@@ -3,7 +3,9 @@
 Timestamp Cleaner needs **both** FFmpeg and FFprobe. They normally come in the same
 FFmpeg package; installing the whole package is the recommended recovery even when
 only one executable is missing. The application remains open but disables media
-operations until both tools pass their version checks.
+operations until both tools pass identity and capability checks. FFmpeg runs a
+one-frame synthetic H.264/delogo/timing self-test to a null sink; FFprobe must expose
+the rotation side-data schema. No family media is used or output file written.
 
 Automatic installation is implemented for Windows through WinGet. Its clean-account
 installation and offline-failure scenarios have **not yet been verified end to end**.
@@ -87,14 +89,28 @@ ffprobe -version
 
 Other distributions use different package names and repositories; follow the
 [distribution links on FFmpeg's download page](https://ffmpeg.org/download.html).
+Check the installed version and capabilities: Ubuntu 22.04's FFmpeg 4.4 package
+is too old for this pipeline, even though both executable names exist. Use a
+distribution with a current package, or a current Linux build linked from FFmpeg's
+download page. Verify the provider's checksum, extract the complete package into
+a stable user folder, and launch with explicit paths if you cannot update PATH:
+
+```sh
+TIMESTAMP_CLEANER_FFMPEG=/absolute/path/to/ffmpeg/bin/ffmpeg \
+TIMESTAMP_CLEANER_FFPROBE=/absolute/path/to/ffmpeg/bin/ffprobe \
+./target/release/timestamp-cleaner
+```
+
 Automatic Linux installation is not implemented. Restart the app if PATH changed,
 or choose **Check again** after installing into an existing PATH location.
 
 ## Both tools exist but processing still fails
 
-Version checks establish that the tools can run; they do not prove the build contains
-every required codec and filter. This application requires `libx264`, `delogo` and
-PNG encoding; MP4 audio conversion also requires AAC encoding. Inspect the build:
+Startup checks establish executable identity, the basic repair/timing pipeline and
+FFprobe's required side-data schema. They do not prove compatibility with every input
+codec. This application requires `libx264`, `delogo`, `lavfi`, PNG encoding and the
+`-fps_mode passthrough` / `-enc_time_base demux` timing options; MP4 audio conversion
+also requires AAC encoding. Inspect the build:
 
 ```powershell
 ffmpeg -hide_banner -encoders
@@ -105,3 +121,14 @@ Look for `libx264`, `png`, `aac` in the encoders and `delogo` in the filters. Us
 trusted build containing those components if any are absent. For support, report
 the app revision, OS, tool versions, which component failed and the exact error.
 Redact personal paths; do not upload family footage or sensitive package-manager logs.
+
+If an older tool earlier in PATH hides a newly installed package, correct the user
+PATH or use explicit paths to the current package. Discovery preserves PATH/override
+precedence; accepting installation does not silently rewrite your configuration.
+
+From a source checkout, diagnose the exact desktop readiness checks without opening
+a window. Exit status is zero only when both tools are usable:
+
+```sh
+cargo run --locked --no-default-features --example check_dependencies
+```

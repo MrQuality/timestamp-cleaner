@@ -6,6 +6,8 @@ Media files are untrusted data. FFmpeg and FFprobe are trusted native programs i
 the user or, with explicit consent, by Microsoft WinGet. Discovery and media processing do not
 make network requests. The application never executes a command shell. Tool discovery resolves
 absolute paths, excludes the current directory and validates both tools using version commands.
+Bounded capability checks exercise one synthetic video frame to a null sink and verify
+FFprobe's rotation schema before readiness. The self-test reads no user media and writes no file.
 Explicit tool-path environment variables and the system package-manager configuration are trusted.
 
 When dependencies are unavailable, the user can accept installation or continue with media

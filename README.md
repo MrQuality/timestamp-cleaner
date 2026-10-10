@@ -12,7 +12,9 @@ Python Telea/Navier–Stokes algorithms. See [ROADMAP.md](ROADMAP.md) for the re
 
 The application checks FFmpeg and FFprobe in the background at startup. Existing tools are
 detected from PATH and known Windows package-manager locations, then checked with their version
-commands. If either tool is unavailable, the application asks whether to install them. Choosing
+commands. FFmpeg also runs a bounded, one-frame repair/timing self-test, and FFprobe must
+expose the rotation side-data schema. If either tool is unavailable or incompatible, the
+application asks whether to install them. Choosing
 **Continue disabled** keeps the application open with media operations disabled. You can install
 or check again later.
 
@@ -26,7 +28,9 @@ See [manual installation and recovery](docs/media-tools.md) if automatic setup f
 Clean-account installation is still unverified; the pending scenarios are listed in
 [manual verification](docs/manual-verification.md).
 
-For manual setup, the FFmpeg build must support `libx264`, `delogo`, and PNG encoding. Executables
+For manual setup, use a current FFmpeg/FFprobe build supporting `libx264`, `delogo`, `lavfi`,
+PNG encoding, `-fps_mode passthrough` and `-enc_time_base demux`. Ubuntu 22.04's FFmpeg 4.4
+package is incompatible; install a current build instead. Executables
 in the current working directory are not discovered implicitly. Absolute paths can instead be
 supplied through `TIMESTAMP_CLEANER_FFMPEG` and `TIMESTAMP_CLEANER_FFPROBE`; invalid overrides
 must be corrected or removed, since installation does not silently replace explicit configuration.
