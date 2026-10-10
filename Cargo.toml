@@ -1,0 +1,35 @@
+[package]
+name = "timestamp-cleaner"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.92"
+description = "Local desktop restoration of camera timestamp overlays"
+publish = false
+
+[features]
+default = ["desktop"]
+desktop = ["dep:eframe", "dep:rfd"]
+media-tests = []
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tempfile = "3"
+image = { version = "0.25", default-features = false, features = ["png"] }
+eframe = { version = "0.35", optional = true, default-features = false, features = ["default_fonts", "glow", "x11", "wayland"] }
+rfd = { version = "0.15", optional = true }
+
+[[bin]]
+name = "timestamp-cleaner"
+required-features = ["desktop"]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
