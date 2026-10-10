@@ -19,8 +19,15 @@ Keep technical disagreements focused on code and evidence. Be respectful, assume
 good faith and do not harass contributors. Maintainers may close abusive discussions
 or remove material that exposes personal data. There is no guaranteed support
 response time or supported stable release yet; current development targets main.
-A dedicated conduct-reporting contact and broader governance policy remain owner
-decisions before growing a contributor community.
+Follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and [GOVERNANCE.md](GOVERNANCE.md).
+Questions belong in [Discussions](https://github.com/MrQuality/timestamp-cleaner/discussions);
+use the issue templates for bugs and feature requests. See [.github/SUPPORT.md](.github/SUPPORT.md)
+for support scope and privacy expectations.
+
+Create a topic branch or fork and open a pull request against `main`. Required CI must
+pass and review conversations must be resolved before merging. No approving review is
+required for this single-maintainer project; independent review is encouraged. Prefer
+merge commits to retain the contextual commit messages described below.
 
 Keep personal test recordings outside the checkout or in the ignored `.local-media/`
 folder. Environment files and private signing bundles are also ignored; these patterns

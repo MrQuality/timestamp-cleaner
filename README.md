@@ -2,7 +2,24 @@
 
 <img src="assets/icon.png" alt="Timestamp Cleaner: a film frame, mountain landscape and restoration sparkle" width="128" />
 
-A Rust desktop application for repairing fixed camera timestamps in local family videos.
+**Keep the memories. Clean up the timestamp.** Timestamp Cleaner is a local Rust desktop
+application for repairing camera timestamps burned into personal and family videos.
+
+I created this project to remove timestamps from my own family videos recorded during trips.
+It started as a Python script; this Rust application adds a native interface to select the
+timestamp area, compare a repair preview and export one chosen result with audio.
+Video processing happens on your computer, with no uploads or telemetry.
+
+[![Rust quality gates](https://github.com/MrQuality/timestamp-cleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/MrQuality/timestamp-cleaner/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
+## What you can do today
+
+- Select a timestamp rectangle visually and refine it with source-pixel controls.
+- Compare original and repaired frame previews before processing the full video.
+- Export one selected result as MKV or MP4, with quality controls and audio preservation.
+- Cancel work, keep the original untouched and avoid overwriting existing exports.
+- Detect FFmpeg/FFprobe at startup and optionally install them through WinGet on Windows.
 
 **Status: first working development milestone, not a production release.** The current repair
 backend is FFmpeg rectangle interpolation. It is explicitly different from the original
@@ -38,8 +55,23 @@ must be corrected or removed, since installation does not silently replace expli
 To build from source, install Rust 1.92 or newer and run:
 
 ```powershell
+git clone https://github.com/MrQuality/timestamp-cleaner.git
+cd timestamp-cleaner
 cargo run --locked --release
 ```
+
+There are no supported downloadable installers yet. On Windows, install the Rust MSVC
+toolchain and Visual Studio Build Tools with the **Desktop development with C++** workload.
+On Ubuntu, install the desktop build prerequisites before running Cargo:
+
+```sh
+sudo apt-get update
+sudo apt-get install -y build-essential pkg-config libxkbcommon-dev libwayland-dev libgtk-3-dev
+```
+
+Install compatible media tools using [the setup guide](docs/media-tools.md); older distro
+packages may fail the startup capability checks. Windows and Linux are the current targets;
+macOS is not validated.
 
 Open a video, drag over its timestamp, render a preview, and toggle Original / Repaired.
 Numeric controls allow precise source-pixel selection. Select export quality and export
@@ -102,6 +134,19 @@ Third-party dependencies retain their own licenses; see [THIRD_PARTY.md](THIRD_P
 FFmpeg is externally installed, not bundled. A bundled build needs a separate license and
 update review for its selected components.
 
-The repository is being prepared for public development on GitHub. Remaining publication
-and release gates are tracked in [docs/open-source-readiness.md](docs/open-source-readiness.md).
+## Join the project
+
+Bug reports, feature proposals, documentation, accessibility feedback and focused pull
+requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[roadmap](ROADMAP.md). Share synthetic examples rather than personal recordings.
+
+- [Issues](https://github.com/MrQuality/timestamp-cleaner/issues): reproducible bugs and scoped feature requests.
+- [Discussions](https://github.com/MrQuality/timestamp-cleaner/discussions): questions, ideas and workflow feedback.
+- [Private security reports](https://github.com/MrQuality/timestamp-cleaner/security/advisories/new): suspected vulnerabilities.
+- [Support](.github/SUPPORT.md), [community conduct](CODE_OF_CONDUCT.md) and [maintainership](GOVERNANCE.md).
+
+The project is maintained by [Nir Rozen (@MrQuality)](https://github.com/MrQuality).
+Pull requests require passing CI and resolved conversations; no approving review is
+required while the project has a single maintainer. Independent review is welcome.
+Remaining release gates are tracked in [docs/open-source-readiness.md](docs/open-source-readiness.md).
 Development changes and known limitations are summarized in [CHANGELOG.md](CHANGELOG.md).

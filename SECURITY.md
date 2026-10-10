@@ -55,13 +55,12 @@ installer signing and the manually tested Windows accessibility flow.
 
 ## Reporting vulnerabilities
 
-Do not post exploit details, sensitive media or credentials in public issues. When this
-repository is published on GitHub, maintainers must enable **Private vulnerability reporting**
-before advertising that channel. Once enabled, use **Security > Advisories > Report a
-vulnerability** on the repository. See [GitHub's private reporting instructions](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).
+Do not post exploit details, sensitive media or credentials in public issues. Private
+vulnerability reporting is enabled for this repository. Use
+[Report a vulnerability](https://github.com/MrQuality/timestamp-cleaner/security/advisories/new)
+or **Security > Advisories > Report a vulnerability**. See
+[GitHub's private reporting instructions](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).
 
-No public repository URL or dedicated private contact has been configured yet. Establish
-and verify a private reporting route before publication; this file alone does not enable it.
 Include the affected commit/version, OS and tool versions, impact and synthetic reproduction
 steps. Redact personal paths. There is no supported stable release or promised response SLA
 yet; development fixes target the current main branch.
