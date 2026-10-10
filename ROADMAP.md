@@ -55,11 +55,11 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] GitHub update configuration and pull-request template.
 - [x] Full-history secret/privacy audit and reproducible dependency declaration/source inventory.
 - [x] Local Windows/Linux minimum-Rust tests, release builds and quality checks.
-- [ ] Owner approval of publication rights, public Git identity and artwork identity.
+- [x] Owner-authorized public publication with existing Git identity, artwork and licensing limits.
 - [ ] Complete per-binary notices and review remaining unused-target/feature license gaps.
-- [ ] Configure the real GitHub repository, private reporting and branch/security settings.
+- [x] Configure the real GitHub repository, private reporting and branch/security settings.
 - [x] Verify clean-checkout build/test instructions locally; enforce additional publication checks in CI.
-- [ ] Verify Windows/Linux CI on GitHub.
+- [x] Enforce Windows/Linux CI on GitHub, inspect initial results and require passing checks before merge.
 - [ ] Embed the Windows executable/installer icon resource and inspect native appearance.
 
 Follow [the publication checklist](docs/open-source-readiness.md) for evidence and the

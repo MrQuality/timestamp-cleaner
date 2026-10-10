@@ -1,8 +1,10 @@
 # GitHub and Apache-2.0 readiness
 
 This checklist separates publishing a development **source repository** from
-shipping a supported **binary release**. No remote is configured and no GitHub-side
-setting has been applied locally. Status is a record of evidence, not a certification.
+shipping a supported **binary release**. The public repository is
+[MrQuality/timestamp-cleaner](https://github.com/MrQuality/timestamp-cleaner).
+Verified settings are recorded in [repository-settings.md](repository-settings.md).
+Status is a record of evidence, not a certification.
 `publish = false` in Cargo.toml intentionally prevents crates.io publication; it does
 not prevent hosting the application source on GitHub.
 
@@ -11,7 +13,7 @@ not prevent hosting the application source on GitHub.
 - [x] Canonical Apache License 2.0 in LICENSE; Cargo package declares `Apache-2.0`.
 - [x] README states development status, actual repair algorithm and feature limits.
 - [x] Contribution/commit conventions and licensing expectations are documented.
-- [x] Security model, dependency policy and unconfigured reporting channel are explicit.
+- [x] Security model, dependency policy and enabled private reporting channel are explicit.
 - [x] Cargo.lock and Windows/Linux CI quality gates are tracked; actions use immutable revisions.
 - [x] Manual dependency recovery and outstanding verification scenarios are documented.
 - [x] Application artwork and its provenance are tracked in the project.
@@ -26,31 +28,36 @@ fixes and unresolved license/distribution limitations.
 
 ## Before making the source repository public
 
-- [ ] Confirm the maintainer's public identity/contact and rights to publish all original
-  code/documentation/artwork under Apache-2.0. Review any employer or external contributions.
+- [x] Owner explicitly requested public publication under their authenticated GitHub account,
+  retaining the existing project license, artwork and Git history. This authorization
+  is not an independent assessment of ownership, employer constraints or trademark clearance.
 - [x] Review **all Git history**, not just the latest tree, for credentials, personal
   data, family media, machine paths and accidental proprietary material. Commit author
   emails are public metadata: choose deliberately. `.gitignore` does not remove history.
   Scan with a maintained secret-scanning tool and manually inspect flagged content;
   revoke exposed credentials before remediation. Gitleaks found no secrets at the audited
-  tip; repeat before pushing new history. Owner approval of public author metadata remains open.
+  tip; repeat before pushing new history. Existing author metadata was retained under
+  the owner's public-publication instruction; no history was rewritten.
 - [x] Perform dependency declaration/source review and preserve available upstream/font
   licensing records; follow THIRD_PARTY.md. Two unused-target/feature notice gaps and
   per-binary redistribution review remain explicit; this is not legal clearance.
-- [ ] Confirm artwork identity/provenance is suitable for the public project; do not imply
-  trademark clearance or exclusive rights to generated content.
-- [ ] Choose the GitHub owner/repository name; create the repo and add its real URL to
+- [x] Publish the existing artwork with its recorded provenance and licensing limits;
+  no trademark clearance or exclusive rights to generated content are claimed.
+- [x] Choose the GitHub owner/repository name; create the repo and add its real URL to
   Cargo metadata and README. Do not add fabricated repository, badge or support URLs.
-- [ ] Enable and verify GitHub private vulnerability reporting or supply a tested private
+- [x] Enable and verify GitHub private vulnerability reporting or supply a tested private
   contact. Enable dependency graph/Dependabot alerts and available secret-scanning controls.
-- [ ] Enable branch rules requiring PR review and successful CI; restrict force pushes
-  and deletion of the default branch. Keep workflow permissions minimal and secrets out of PR jobs.
-- [ ] Run the first GitHub CI build on Windows and Linux and inspect actual logs. Local
-  checks do not prove hosted CI success. The declared minimum Rust version is now enforced
-  in the CI definition and has passed local Windows/Linux verification.
+- [x] Require pull requests, seven successful CI checks, up-to-date branches and resolved
+  conversations on `main`. Require **zero approving reviews**, as requested for a sole
+  maintainer. Block force pushes and deletion, including for admins. Actions use read-only
+  defaults, cannot approve PRs and must reference actions by full commit SHA.
+- [x] Execute the first GitHub Windows/Linux CI run and inspect actual logs. Linux passed;
+  Windows exposed a launcher-related cancellation stall. The direct-binary CI fix and
+  protected rerun are tracked in [PR #3](https://github.com/MrQuality/timestamp-cleaner/pull/3).
+  All seven checks must pass before merging; local checks alone do not prove hosted success.
 - [x] Confirm clean-checkout build/test instructions locally and document collaboration/support limits.
-- [ ] Set description/topics and decide the conduct-reporting contact and broader governance
-  expectations before inviting a larger contributor community.
+- [x] Set description/topics and publish support, conduct and governance guidance. Sensitive
+  conduct reports use GitHub reporting controls; no dedicated conduct inbox is claimed.
 
 Apache-2.0 application guidance is available from the
 [Apache Software Foundation](https://www.apache.org/licenses/LICENSE-2.0.html).
