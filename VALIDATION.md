@@ -73,3 +73,14 @@ in ROADMAP.md. The user-reported audio smoke test above predates this update.
 The outstanding native/installation scenarios and evidence requirements are tracked in
 [docs/manual-verification.md](docs/manual-verification.md). Manual fallback instructions are
 available in [docs/media-tools.md](docs/media-tools.md). These documents do not change test results.
+
+## Application icon integration
+
+On 2026-10-10, the generated icon was saved in assets with its prompt/provenance.
+The 256-pixel PNG was visually inspected and FFprobe confirmed RGBA at 256 x 256;
+the ICO contains a 256-pixel PNG image. Formatting, strict all-target/all-feature
+Clippy and the release build passed after embedding the PNG in the native window.
+No media processing code changed, so media regressions were not repeated for artwork.
+Native taskbar, Explorer and high-DPI appearance remain unverified. The standalone
+Windows executable does not yet embed a PE icon resource; the ICO is available for
+that future packaging step.
