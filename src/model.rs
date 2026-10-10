@@ -1,5 +1,42 @@
 use crate::{Error, Result};
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum OutputFormat {
+    #[default]
+    Mkv,
+    Mp4,
+}
+
+impl OutputFormat {
+    pub const ALL: [Self; 2] = [Self::Mkv, Self::Mp4];
+    pub fn extension(self) -> &'static str {
+        match self {
+            Self::Mkv => "mkv",
+            Self::Mp4 => "mp4",
+        }
+    }
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Mkv => "MKV (Matroska)",
+            Self::Mp4 => "MP4",
+        }
+    }
+    pub fn muxer(self) -> &'static str {
+        match self {
+            Self::Mkv => "matroska",
+            Self::Mp4 => "mp4",
+        }
+    }
+    /// Conservative playback policy: MP4 copies AAC/MP3; other codecs become AAC.
+    pub fn audio_codec(self, source: &str) -> &str {
+        match self {
+            Self::Mkv => source,
+            Self::Mp4 if matches!(source, "aac" | "mp3") => source,
+            Self::Mp4 => "aac",
+        }
+    }
+}
+
 /// Coordinates always refer to decoded source pixels, never display pixels.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Region {

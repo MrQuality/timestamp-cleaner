@@ -9,7 +9,7 @@ use timestamp_cleaner::{
     Result,
     export::{self, ExportRequest},
     media::{self, Media, Tools},
-    model::{Quality, Region},
+    model::{OutputFormat, Quality, Region},
     process::Cancellation,
 };
 
@@ -200,6 +200,7 @@ impl App {
                 destination,
                 region: self.region,
                 quality: self.quality,
+                format: OutputFormat::Mkv,
             };
             self.start("Exporting one selected repair…", move |cancel, tx| {
                 Ok(Completion::Exported(export::export(

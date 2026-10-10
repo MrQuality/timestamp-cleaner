@@ -5,7 +5,7 @@ use timestamp_cleaner::{
     Error,
     export::{ExportRequest, export},
     media::{Media, Tools, preview, probe},
-    model::{Quality, Region},
+    model::{OutputFormat, Quality, Region},
     process::{self, Cancellation},
 };
 
@@ -68,6 +68,7 @@ fn request(source: Media, destination: &Path) -> ExportRequest {
             height: 20,
         },
         quality: Quality::High,
+        format: OutputFormat::Mkv,
     }
 }
 
@@ -372,4 +373,103 @@ fn cancellation_and_destination_race_remove_partial_exports() {
                 .ends_with(".partial")
         }));
     }
+}
+
+#[test]
+fn mp4_preserves_aac_tracks_and_variable_frame_timing() {
+    let tools = Tools::discover().unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let source = fixture(&tools, &temp.path().join("source.mp4"), true);
+    let destination = temp.path().join("cleaned.mp4");
+    let mut request = request(source.clone(), &destination);
+    request.format = OutputFormat::Mp4;
+    export(&tools, &request, &Cancellation::default(), None).unwrap();
+    assert_eq!(
+        audio_hash(&tools, &source.path),
+        audio_hash(&tools, &destination)
+    );
+    for (before, after) in [
+        (
+            timestamps(&tools, &source.path),
+            timestamps(&tools, &destination),
+        ),
+        (
+            audio_timestamps(&tools, &source.path),
+            audio_timestamps(&tools, &destination),
+        ),
+    ] {
+        assert_eq!(before.len(), after.len());
+        for (a, b) in before.iter().zip(&after) {
+            assert!((a - b).abs() < 0.002, "timestamp changed: {a} -> {b}");
+        }
+    }
+    // Parse top-level ISO BMFF boxes rather than searching arbitrary payload bytes.
+    let bytes = std::fs::read(&destination).unwrap();
+    let mut offset = 0;
+    let mut boxes = Vec::new();
+    while offset + 8 <= bytes.len() {
+        let size = u32::from_be_bytes(bytes[offset..offset + 4].try_into().unwrap()) as usize;
+        assert!(size >= 8);
+        boxes.push(&bytes[offset + 4..offset + 8]);
+        offset += size;
+    }
+    let moov = boxes.iter().position(|name| *name == b"moov").unwrap();
+    let mdat = boxes.iter().position(|name| *name == b"mdat").unwrap();
+    assert!(moov < mdat, "faststart metadata must precede media data");
+}
+
+#[test]
+fn mp4_converts_incompatible_audio_to_aac_without_dropping_tracks() {
+    let tools = Tools::discover().unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let input = fixture(&tools, &temp.path().join("source.mp4"), true);
+    let flac = temp.path().join("lossless.mkv");
+    command_output(
+        Command::new(&tools.ffmpeg)
+            .args(["-v", "error", "-i"])
+            .arg(&input.path)
+            .args(["-map", "0", "-c:v", "copy", "-c:a", "flac"])
+            .arg(&flac),
+    );
+    let source = probe(&tools, &flac, &Cancellation::default()).unwrap();
+    assert_eq!(source.audio_codecs, vec!["flac", "flac"]);
+    let destination = temp.path().join("compatible.mp4");
+    let mut request = request(source.clone(), &destination);
+    request.format = OutputFormat::Mp4;
+    export(&tools, &request, &Cancellation::default(), None).unwrap();
+    let result = probe(&tools, &destination, &Cancellation::default()).unwrap();
+    assert_eq!(result.audio_codecs, vec!["aac", "aac"]);
+    assert!((source.duration - result.duration).abs() < 0.05);
+    let before = timestamps(&tools, &flac);
+    let after = timestamps(&tools, &destination);
+    assert_eq!(before.len(), after.len());
+    for (a, b) in before.iter().zip(&after) {
+        assert!((a - b).abs() < 0.002);
+    }
+}
+
+#[test]
+fn mp4_accepts_silent_video() {
+    let tools = Tools::discover().unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let input = fixture(&tools, &temp.path().join("source.mp4"), false);
+    let silent = temp.path().join("silent.mkv");
+    command_output(
+        Command::new(&tools.ffmpeg)
+            .args(["-v", "error", "-i"])
+            .arg(&input.path)
+            .args(["-map", "0:v", "-c", "copy"])
+            .arg(&silent),
+    );
+    let source = probe(&tools, &silent, &Cancellation::default()).unwrap();
+    let destination = temp.path().join("silent.mp4");
+    let mut request = request(source, &destination);
+    request.format = OutputFormat::Mp4;
+    export(&tools, &request, &Cancellation::default(), None).unwrap();
+    assert!(
+        probe(&tools, &destination, &Cancellation::default())
+            .unwrap()
+            .audio_codecs
+            .is_empty()
+    );
 }

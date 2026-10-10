@@ -1,7 +1,7 @@
 use crate::{
     Error, Result,
     media::{self, Media, Tools},
-    model::{Quality, Region},
+    model::{OutputFormat, Quality, Region},
     process::{self, Cancellation},
 };
 use std::{
@@ -16,17 +16,18 @@ pub struct ExportRequest {
     pub destination: PathBuf,
     pub region: Region,
     pub quality: Quality,
+    pub format: OutputFormat,
 }
 
-/// Matroska supports copying a broad range of source audio codecs without lossy conversion.
-fn validate_destination(path: &Path) -> Result<PathBuf> {
+fn validate_destination(path: &Path, format: OutputFormat) -> Result<PathBuf> {
     if path
         .extension()
-        .is_none_or(|ext| !ext.eq_ignore_ascii_case("mkv"))
+        .is_none_or(|ext| !ext.eq_ignore_ascii_case(format.extension()))
     {
-        return Err(Error::Invalid(
-            "Choose a .mkv output file to preserve source audio codecs".into(),
-        ));
+        return Err(Error::Invalid(format!(
+            "Choose a .{} output file to match the selected format",
+            format.extension()
+        )));
     }
     let parent = path
         .parent()
@@ -56,7 +57,7 @@ pub fn export(
     let region = request
         .region
         .validate(request.source.width, request.source.height)?;
-    let destination = validate_destination(&request.destination)?;
+    let destination = validate_destination(&request.destination, request.format)?;
     let source = media::probe(tools, &request.source.path, cancel)?;
     // Re-probe rather than trusting stale UI metadata after external source edits.
     if source.width != request.source.width
@@ -90,42 +91,52 @@ pub fn export(
         "2",
     ]);
     media::input(&mut command, &source.path);
+    command.args([
+        "-map",
+        &format!("0:{}", source.video_index),
+        "-map",
+        "0:a?",
+        "-map_metadata",
+        "0",
+        "-map_chapters",
+        "0",
+        "-vf",
+        &region.filter(),
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-crf",
+        request.quality.crf(),
+        "-pix_fmt",
+        "yuv420p",
+        "-fps_mode",
+        "passthrough",
+        "-enc_time_base",
+        "demux",
+        "-avoid_negative_ts",
+        "disabled",
+        "-threads",
+        "4",
+        "-progress",
+        "pipe:1",
+        "-nostats",
+    ]);
+    for (index, codec) in source.audio_codecs.iter().enumerate() {
+        let copy = request.format.audio_codec(codec) == codec;
+        command.args([
+            format!("-c:a:{index}"),
+            if copy { "copy".into() } else { "aac".into() },
+        ]);
+        if !copy {
+            command.args([format!("-b:a:{index}"), "192k".into()]);
+        }
+    }
+    if request.format == OutputFormat::Mp4 {
+        command.args(["-movflags", "+faststart"]);
+    }
     command
-        .args([
-            "-map",
-            &format!("0:{}", source.video_index),
-            "-map",
-            "0:a?",
-            "-map_metadata",
-            "0",
-            "-map_chapters",
-            "0",
-            "-vf",
-            &region.filter(),
-            "-c:v",
-            "libx264",
-            "-preset",
-            "medium",
-            "-crf",
-            request.quality.crf(),
-            "-pix_fmt",
-            "yuv420p",
-            "-fps_mode",
-            "passthrough",
-            "-enc_time_base",
-            "demux",
-            "-avoid_negative_ts",
-            "disabled",
-            "-c:a",
-            "copy",
-            "-threads",
-            "4",
-            "-progress",
-            "pipe:1",
-            "-nostats",
-            "-f",
-            "matroska",
-        ])
+        .args(["-f", request.format.muxer()])
         .arg(temporary.path());
     let progress = progress.unwrap_or_else(|| std::sync::mpsc::sync_channel(1).0);
     process::run(
@@ -137,7 +148,7 @@ pub fn export(
     )?;
     cancel.check()?;
     let result = media::probe(tools, temporary.path(), cancel)?;
-    validate_output(&source, &result)?;
+    validate_output(&source, &result, request.format)?;
     temporary.as_file().sync_all()?;
     cancel.check()?;
     // Atomic no-clobber publication on the same filesystem. Never overwrite an existing file.
@@ -147,9 +158,14 @@ pub fn export(
     Ok(destination)
 }
 
-fn validate_output(source: &Media, result: &Media) -> Result<()> {
+fn validate_output(source: &Media, result: &Media, format: OutputFormat) -> Result<()> {
+    let expected_audio: Vec<_> = source
+        .audio_codecs
+        .iter()
+        .map(|codec| format.audio_codec(codec))
+        .collect();
     if (source.width, source.height) != (result.width, result.height)
-        || source.audio_codecs != result.audio_codecs
+        || expected_audio != result.audio_codecs
         || (source.duration - result.duration).abs() > 0.25
     {
         return Err(Error::Invalid(
@@ -167,10 +183,11 @@ mod tests {
         let temp = tempfile::tempdir().unwrap();
         let output = temp.path().join("keep.mkv");
         std::fs::write(&output, b"original").unwrap();
-        assert!(validate_destination(&output).is_err());
+        assert!(validate_destination(&output, OutputFormat::Mkv).is_err());
         assert_eq!(std::fs::read(&output).unwrap(), b"original");
-        assert!(validate_destination(&temp.path().join("out.mp4")).is_err());
-        assert!(validate_destination(&temp.path().join("new.mkv")).is_ok());
+        assert!(validate_destination(&temp.path().join("out.mp4"), OutputFormat::Mkv).is_err());
+        assert!(validate_destination(&temp.path().join("new.mkv"), OutputFormat::Mkv).is_ok());
+        assert!(validate_destination(&temp.path().join("new.MP4"), OutputFormat::Mp4).is_ok());
     }
     #[test]
     fn refuses_truncated_or_silent_export() {
@@ -184,11 +201,11 @@ mod tests {
         };
         let mut result = source.clone();
         result.duration = 9.0;
-        assert!(validate_output(&source, &result).is_err());
+        assert!(validate_output(&source, &result, OutputFormat::Mkv).is_err());
         result.duration = 10.0;
         result.audio_codecs.clear();
-        assert!(validate_output(&source, &result).is_err());
+        assert!(validate_output(&source, &result, OutputFormat::Mkv).is_err());
         result.audio_codecs = source.audio_codecs.clone();
-        assert!(validate_output(&source, &result).is_ok());
+        assert!(validate_output(&source, &result, OutputFormat::Mkv).is_ok());
     }
 }
