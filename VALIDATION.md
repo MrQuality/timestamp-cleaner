@@ -144,16 +144,17 @@ The updated branch incorporates the actual-binary Windows FFmpeg CI setup and
 checkout v7.0.1. Fresh hosted results for this exact upgrade are available in
 [PR #2's checks](https://github.com/MrQuality/timestamp-cleaner/pull/2/checks); earlier
 failed/stalled runs predate these repairs. The owner subsequently reported that the
-MKV workflow works in manual testing. See the scoped smoke-test evidence below.
+MKV and MP4 workflows work in manual testing. See the scoped smoke-test evidence below.
 The open/save/cancel, non-ASCII path and format-filter smoke tests are documented in
 [manual-verification.md](docs/manual-verification.md#native-dialog-upgrade-pr-2).
 
-### User-reported MKV smoke test
+### User-reported MKV and MP4 smoke tests
 
 On 2026-10-10, following the PR #2 repair at eccac64, the owner reported:
 "manually verified that mkv works."
-This records a successful user-reported MKV workflow smoke test. The exact tested
+The owner then confirmed: "Mp4 also works, I verified".
+These reports record successful user-reported MKV and MP4 workflow smoke tests. The exact tested
 binary/commit, OS, tool versions and individual observations were not specified.
 It does not establish separate audio/playback, extension/filter, overwrite-protection,
-dialog-cancellation, non-ASCII-path, MP4 or Linux-desktop results. Those detailed
+dialog-cancellation, non-ASCII-path or Linux-desktop results. Those detailed
 checks remain pending; this report does not close the broader manual release gates.
