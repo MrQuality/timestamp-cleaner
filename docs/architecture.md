@@ -12,8 +12,9 @@ can be exercised by tests and future command-line clients without launching a wi
 
 FFmpeg owns demuxing, decoding, filtering, encoding and muxing in one streaming process.
 This intentionally avoids a raw-frame pipe, which would discard original per-frame timestamps.
-The video filter receives source-pixel coordinates before preview scaling. Audio packets bypass
-the decoder and encoder. `fps_mode=passthrough` and the demuxer time base avoid a synthetic
+The video filter receives source-pixel coordinates before preview scaling. MKV copies all audio;
+MP4 copies AAC/MP3 and transcodes other audio to AAC, preserving track count. Output validation
+checks codecs against that typed format policy. `fps_mode=passthrough` and the demuxer time base avoid a synthetic
 fixed-FPS clock. Matroska quantizes timestamps to its output time base; tests allow 2 ms of
 timestamp rounding, not wholesale timing changes.
 
@@ -25,6 +26,13 @@ Publication occurs only after successful exit and output probing. Output dimensi
 codec list and duration (250 ms tolerance for muxer/codec padding) are checked. Runtime validation
 does not fully decode the exported file or compare every audio packet; integration tests perform
 stronger frame-timestamp and audio-payload checks on controlled fixtures.
+
+Startup checks run on the same background-job boundary as media processing. Dependency UI state
+is explicit: pending, checking, ready, unavailable or installing. Only ready exposes usable tools.
+An unavailable state opens a consent prompt; declining dismisses it without starting an installer.
+Accepted installation runs the exact user-scope WinGet package and re-checks both tools. Failed
+installation offers recovery without automatically retrying or enabling the application. Known
+WinGet link directories are searched directly so the current process does not depend on refreshed PATH.
 
 ## Performance
 

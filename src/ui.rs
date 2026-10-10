@@ -7,13 +7,19 @@ use std::{
 };
 use timestamp_cleaner::{
     Result,
+    dependencies::DependencyReport,
     export::{self, ExportRequest},
-    media::{self, Media, Tools},
+    installer::{self, InstallDecision},
+    media::{self, Media},
     model::{OutputFormat, Quality, Region},
     process::Cancellation,
 };
 
+mod dependencies;
+use dependencies::{Action, DependencyState};
+
 enum Completion {
+    Dependencies(DependencyReport),
     Loaded(Media, image::RgbaImage),
     Preview(image::RgbaImage, image::RgbaImage, f64),
     Exported(PathBuf),
@@ -27,7 +33,7 @@ struct Job {
 }
 
 pub struct App {
-    tools: Option<Tools>,
+    dependencies: DependencyState,
     source: Option<Media>,
     original: Option<TextureHandle>,
     repaired: Option<TextureHandle>,
@@ -45,13 +51,8 @@ pub struct App {
 
 impl Default for App {
     fn default() -> Self {
-        let tools = Tools::discover();
-        let status = match &tools {
-            Ok(_) => "Open a video, then drag a rectangle around its timestamp.".into(),
-            Err(error) => error.to_string(),
-        };
         Self {
-            tools: tools.ok(),
+            dependencies: DependencyState::default(),
             source: None,
             original: None,
             repaired: None,
@@ -69,7 +70,7 @@ impl Default for App {
             show_repaired: false,
             job: None,
             progress: 0.0,
-            status,
+            status: "Checking media dependencies…".into(),
         }
     }
 }
@@ -118,6 +119,15 @@ impl App {
             ))
         });
         match result {
+            Ok(Completion::Dependencies(report)) => {
+                self.dependencies.checked(report);
+                self.status = if self.dependencies.tools().is_some() {
+                    "Media tools are ready. Open a video to begin.".into()
+                } else {
+                    "Required media tools are unavailable. Install them or continue disabled."
+                        .into()
+                };
+            }
             Ok(Completion::Loaded(source, frame)) => {
                 self.original = Some(texture(ctx, "original", &frame));
                 self.repaired = None;
@@ -144,12 +154,46 @@ impl App {
                 self.progress = 1.0;
                 self.status = format!("Validated export saved to {}", path.display());
             }
-            Err(error) => self.status = error.to_string(),
+            Err(error) => {
+                self.dependencies.failed(&error.to_string());
+                self.status = error.to_string();
+            }
+        }
+    }
+
+    fn dependency_action(&mut self, action: Action) {
+        if self.job.is_some() {
+            return;
+        }
+        match action {
+            Action::Check => {
+                self.dependencies = DependencyState::Checking;
+                self.start("Checking FFmpeg and FFprobe…", |cancel, _| {
+                    let report = DependencyReport::detect(&cancel);
+                    cancel.check()?;
+                    Ok(Completion::Dependencies(report))
+                });
+            }
+            Action::Install if self.dependencies.begin_install() => {
+                self.start("Installing FFmpeg and FFprobe…", |cancel, _| {
+                    Ok(Completion::Dependencies(installer::install(
+                        InstallDecision::Accept,
+                        &cancel,
+                    )?))
+                });
+            }
+            Action::Decline => {
+                self.dependencies.decline();
+                self.status =
+                    "Media operations remain disabled. You can install or check for tools later."
+                        .into();
+            }
+            Action::Install => {}
         }
     }
 
     fn open(&mut self) {
-        let Some(tools) = self.tools.clone() else {
+        let Some(tools) = self.dependencies.tools().cloned() else {
             return;
         };
         if let Some(path) = rfd::FileDialog::new()
@@ -168,7 +212,8 @@ impl App {
     }
 
     fn preview(&mut self) {
-        let (Some(tools), Some(source)) = (self.tools.clone(), self.source.clone()) else {
+        let (Some(tools), Some(source)) = (self.dependencies.tools().cloned(), self.source.clone())
+        else {
             return;
         };
         let region = self.region;
@@ -181,7 +226,8 @@ impl App {
     }
 
     fn export(&mut self) {
-        let (Some(tools), Some(source)) = (self.tools.clone(), self.source.clone()) else {
+        let (Some(tools), Some(source)) = (self.dependencies.tools().cloned(), self.source.clone())
+        else {
             return;
         };
         let name = format!(
@@ -228,24 +274,17 @@ impl App {
         let busy = self.job.is_some();
         if ui
             .add_enabled(
-                !busy && self.tools.is_some(),
+                !busy && self.dependencies.tools().is_some(),
                 egui::Button::new("Open video…"),
             )
             .clicked()
         {
             self.open();
         }
-        if self.tools.is_none() && ui.button("Retry tool discovery").clicked() {
-            match Tools::discover() {
-                Ok(tools) => {
-                    self.tools = Some(tools);
-                    self.status = "Tools found. Open a video.".into();
-                }
-                Err(error) => self.status = error.to_string(),
-            }
+        if let Some(action) = self.dependencies.panel(ui, busy) {
+            self.dependency_action(action);
         }
         let Some(source) = self.source.clone() else {
-            ui.label("Requires trusted ffmpeg and ffprobe executables on PATH.");
             return;
         };
         ui.label(
@@ -263,7 +302,7 @@ impl App {
             source.audio_codecs.len()
         ));
         ui.separator();
-        ui.add_enabled_ui(!busy, |ui| {
+        ui.add_enabled_ui(!busy && self.dependencies.tools().is_some(), |ui| {
             ui.strong("Repair method");
             ui.label("Rectangle interpolation (FFmpeg)");
             ui.small("Draw over the timestamp. Keep a small context margin around it.");
@@ -395,7 +434,7 @@ impl App {
                 StrokeKind::Inside,
             );
         }
-        if self.job.is_none() {
+        if self.job.is_none() && self.dependencies.tools().is_some() {
             if response.drag_started() {
                 self.drag_start = response.interact_pointer_pos();
             }
@@ -424,6 +463,9 @@ impl App {
 
 impl eframe::App for App {
     fn logic(&mut self, ctx: &egui::Context, _: &mut eframe::Frame) {
+        if matches!(self.dependencies, DependencyState::Pending) {
+            self.dependency_action(Action::Check);
+        }
         self.poll(ctx);
     }
 
@@ -450,6 +492,9 @@ impl eframe::App for App {
             .resizable(false)
             .show(ui, |ui| self.controls(ui));
         egui::CentralPanel::default().show(ui, |ui| self.canvas(ui));
+        if let Some(action) = self.dependencies.prompt(ui.ctx()) {
+            self.dependency_action(action);
+        }
     }
 }
 
@@ -476,6 +521,7 @@ fn texture(ctx: &egui::Context, name: &str, frame: &image::RgbaImage) -> Texture
 #[cfg(test)]
 mod tests {
     use super::*;
+    use timestamp_cleaner::dependencies::Tools;
 
     #[test]
     fn desktop_layout_handles_empty_and_loaded_states() {
@@ -488,6 +534,10 @@ mod tests {
         ] {
             app.format = format;
             if loaded {
+                app.dependencies = DependencyState::Ready(Tools {
+                    ffmpeg: "ffmpeg".into(),
+                    ffprobe: "ffprobe".into(),
+                });
                 app.source = Some(Media {
                     path: "family.mp4".into(),
                     width: 160,

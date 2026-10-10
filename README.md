@@ -8,11 +8,25 @@ Python Telea/Navier–Stokes algorithms. See [ROADMAP.md](ROADMAP.md) for the re
 
 ## Run
 
-Install Rust 1.92 or newer and a trusted FFmpeg installation containing both `ffmpeg` and
-`ffprobe`. The FFmpeg build must support `libx264`, `delogo`, and PNG encoding. Place their
-directory on PATH. Executables in the current working directory are not discovered implicitly.
-Absolute paths can instead be supplied through `TIMESTAMP_CLEANER_FFMPEG` and
-`TIMESTAMP_CLEANER_FFPROBE`.
+The application checks FFmpeg and FFprobe in the background at startup. Existing tools are
+detected from PATH and known Windows package-manager locations, then checked with their version
+commands. If either tool is unavailable, the application asks whether to install them. Choosing
+**Continue disabled** keeps the application open with media operations disabled. You can install
+or check again later.
+
+On Windows, accepting installation runs Microsoft WinGet's `Gyan.FFmpeg` package for your user
+account. The package includes both tools. WinGet retains its checksum and malware checks; the
+prompt explains that installation accepts the package/source terms. Both tools are checked again
+before the application enables media operations. Microsoft App Installer (WinGet) must be present;
+if it is unavailable or installation fails, the application stays disabled with recovery instructions.
+Linux currently requires installation through the system package manager.
+
+For manual setup, the FFmpeg build must support `libx264`, `delogo`, and PNG encoding. Executables
+in the current working directory are not discovered implicitly. Absolute paths can instead be
+supplied through `TIMESTAMP_CLEANER_FFMPEG` and `TIMESTAMP_CLEANER_FFPROBE`; invalid overrides
+must be corrected or removed, since installation does not silently replace explicit configuration.
+
+To build from source, install Rust 1.92 or newer and run:
 
 ```powershell
 cargo run --locked --release
@@ -57,7 +71,9 @@ On Linux the desktop build also needs the platform development packages listed i
 
 - `src/model.rs`: source-coordinate geometry and typed encoding quality.
 - `src/process.rs`: cancellable, time-limited subprocess supervision and bounded pipe capture.
-- `src/media.rs`: trusted tool discovery, input restrictions, probing and frame previews.
+- `src/dependencies.rs`: independent local tool discovery and executable validation.
+- `src/installer.rs`: consent-gated per-user Windows package installation.
+- `src/media.rs`: input restrictions, probing and frame previews.
 - `src/export.rs`: single-pass export, validation and publication without overwriting.
 - `src/ui.rs`: desktop interface and one active background job.
 - `tests/media_pipeline.rs`: audio, timing, corruption, cancellation and collision regressions.
@@ -65,6 +81,6 @@ On Linux the desktop build also needs the platform development packages listed i
 See [SECURITY.md](SECURITY.md) for the threat model and [docs/architecture.md](docs/architecture.md)
 for pipeline design and limitations. The earlier Python scripts remain untouched outside this repository.
 
-FFmpeg is an external prerequisite, not bundled. Distribution of a bundled build needs a separate
+FFmpeg is externally installed, not bundled. Distribution of a bundled build needs a separate
 license and update review for its selected components. This repository does not yet grant a public
 software license; choose one before publishing it.

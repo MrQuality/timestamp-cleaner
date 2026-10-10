@@ -40,3 +40,32 @@ On 2026-10-10, the user reported successful video generation with audio using th
 This confirms their export/playback smoke test. The input properties, selected settings and
 output container were not supplied, so this report does not establish a broader format,
 timing, accessibility or restoration-quality result. It is separate from automated test evidence.
+
+## Dependency management and selectable output update
+
+Validated locally on Windows, 2026-10-10, with the same Rust and FFmpeg versions above.
+
+- Formatting and strict Clippy across all targets/features passed.
+- `cargo test --locked --all-features`: 29 tests passed (17 library, 3 headless desktop,
+  9 real-media integration); no ignored or silently skipped fixtures.
+- `cargo build --locked --release`: passed; the native executable includes both new features.
+- Dependency audit with `--deny warnings --no-fetch`: passed against the locally fetched
+  1296-advisory database, scanning 377 locked dependencies.
+- MP4 regressions cover VFR frame and audio-packet timing, copied AAC payload hashes,
+  faststart ordering, two-track FLAC-to-AAC conversion and silent input. MKV checks still pass.
+- Discovery tests cover one missing component, explicit overrides, excluded working-directory
+  candidates and package-manager links visible without refreshing the process PATH.
+- Installer tests use injected runners; decline and cancellation never run the package manager,
+  failure never reports readiness, and a successful exit still requires both usable tools.
+- Headless desktop checks cover both output choices and missing/declined/failed/recovered
+  dependency states. Rendering a consent prompt does not grant consent.
+- Mutation experiment: reversing the private installer consent guard caused three tests to fail,
+  including the decline test's forbidden-runner assertion. Source was restored byte-for-byte;
+  all four installer tests then passed with all features. Windows held the default-feature test
+  executable open after the experiment, preventing its relink; the all-feature test artifact
+  was unaffected. No real installer was invoked by the experiment.
+
+A clean-account WinGet installation, offline failure and interactive native save-dialog/prompt
+checks remain unvalidated. This host already has both media tools; no actual download or
+installation was performed. Linux CI and production-readiness gates remain open as recorded
+in ROADMAP.md. The user-reported audio smoke test above predates this update.

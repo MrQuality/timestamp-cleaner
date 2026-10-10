@@ -3,9 +3,19 @@
 ## Trust boundaries
 
 Media files are untrusted data. FFmpeg and FFprobe are trusted native programs installed by
-the user. This application does not download executables, execute a command shell, or make
-network requests. Tool discovery resolves absolute paths and excludes the current directory.
-Explicit tool-path environment variables are trusted configuration.
+the user or, with explicit consent, by Microsoft WinGet. Discovery and media processing do not
+make network requests. The application never executes a command shell. Tool discovery resolves
+absolute paths, excludes the current directory and validates both tools using version commands.
+Explicit tool-path environment variables and the system package-manager configuration are trusted.
+
+When dependencies are unavailable, the user can accept installation or continue with media
+operations disabled. Acceptance invokes only the exact `Gyan.FFmpeg` package from the `winget`
+source with user scope; no administrator installation, custom downloader, hash bypass, malware
+scan bypass or unattended startup installation is requested. WinGet performs the download and
+checksum validation. The prompt discloses acceptance of source and package terms. Installation
+has a 20-minute timeout, bounded diagnostics and post-install executable checks. Failures never
+enable media processing. Cancellation does not promise rollback of package-manager changes;
+WinGet may have created files or completed installation before it is stopped.
 
 Every subprocess uses structured arguments. Media paths are canonical local regular files;
 they are never interpolated into filter graphs or shell commands. Filter parameters are validated

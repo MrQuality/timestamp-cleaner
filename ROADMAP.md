@@ -17,9 +17,10 @@ a usable native GUI and a media pipeline; it is not the completed product.
 
 ## Dependency management and output formats
 
-- [ ] Detect each required media tool at startup and offer installation with explicit consent.
-- [ ] Keep media operations disabled when dependencies are missing or installation is declined.
+- [x] Detect each required media tool at startup and offer installation with explicit consent (Windows/WinGet).
+- [x] Keep media operations disabled when dependencies are missing or installation is declined.
 - [x] Select MKV or MP4 with explicit audio compatibility behavior.
+- [ ] Validate installation end to end on a clean Windows account, including one missing component and offline failure.
 
 ## Algorithm parity and mask editor
 
