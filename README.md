@@ -62,6 +62,9 @@ cargo run --locked --release
 
 There are no supported downloadable installers yet. On Windows, install the Rust MSVC
 toolchain and Visual Studio Build Tools with the **Desktop development with C++** workload.
+Windows CI also produces an unsigned portable ZIP for testing; these expiring Actions
+artifacts are development previews. See [ZIP builds and beta releases](docs/releases.md)
+for downloads, packaging and the remaining public-release gates.
 On Ubuntu, install the desktop build prerequisites before running Cargo:
 
 ```sh

@@ -8,10 +8,16 @@ import tempfile
 import unittest
 import zipfile
 
-from package_windows import license_payload, validate_executable, verified_notice, write_archive
+from package_windows import license_payload, source_document, validate_executable, verified_notice, write_archive
 
 
 class PackagingTests(unittest.TestCase):
+    def test_copied_recovery_document_links_to_exact_source_revision(self):
+        document = source_document("docs/media-tools.md", "abc123").decode()
+        self.assertIn("/blob/abc123/docs/manual-verification.md)", document)
+        self.assertIn("/blob/abc123/VALIDATION.md)", document)
+        self.assertIn("(https://ffmpeg.org/download.html)", document)
+
     def test_notice_tampering_and_directory_escape_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

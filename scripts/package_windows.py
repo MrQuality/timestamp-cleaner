@@ -6,6 +6,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+import posixpath
 import re
 import struct
 import subprocess
@@ -18,6 +19,19 @@ TARGET = "x86_64-pc-windows-msvc"
 
 def command(*args):
     return subprocess.check_output(args, cwd=ROOT, text=True, encoding="utf-8").strip()
+
+
+def source_document(relative, commit):
+    """Keep links in copied source-policy documents valid outside a Git checkout."""
+    def link(match):
+        target = match[2]
+        if target.startswith(("https://", "http://", "#")):
+            return match[0]
+        target = posixpath.normpath(posixpath.join(posixpath.dirname(relative), target))
+        return f"[{match[1]}](https://github.com/MrQuality/timestamp-cleaner/blob/{commit}/{target})"
+
+    text = (ROOT / relative).read_text(encoding="utf-8")
+    return re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", link, text).encode("utf-8")
 
 
 def verified_notice(directory, declaration):
@@ -112,14 +126,15 @@ def main():
         if key[0] != package["name"]:
             selected.add(key)
     payload = license_payload(rows, packages, selected)
-    for name in ("LICENSE", "THIRD_PARTY.md", "CHANGELOG.md"):
+    commit = command("git", "rev-parse", "HEAD")
+    for name in ("LICENSE", "CHANGELOG.md"):
         payload[name] = (ROOT / name).read_bytes()
-    for source, destination in (("docs/portable-windows.md", "START-HERE.md"), ("docs/media-tools.md", "docs/media-tools.md")):
-        payload[destination] = (ROOT / source).read_bytes()
+    for source, destination in (("THIRD_PARTY.md", "THIRD_PARTY.md"), ("docs/portable-windows.md", "START-HERE.md"), ("docs/media-tools.md", "docs/media-tools.md")):
+        payload[destination] = source_document(source, commit)
     payload["timestamp-cleaner.exe"] = executable
     payload["build-info.json"] = (json.dumps({
         "version": version, "target": TARGET, "features": ["desktop"],
-        "commit": command("git", "rev-parse", "HEAD"),
+        "commit": commit,
         "rustc": command("rustc", "--version", "--verbose"),
         "cargo_lock_sha256": hashlib.sha256((ROOT / "Cargo.lock").read_bytes()).hexdigest(),
         "dependency_count_including_build_tools": len(selected),
