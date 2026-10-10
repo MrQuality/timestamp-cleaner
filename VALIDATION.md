@@ -89,7 +89,9 @@ that future packaging step.
 
 Validated on 2026-10-10 at application commit 06daae7 and its unchanged locked graph.
 Earlier statements about missing Linux local evidence describe the historical runs above;
-Linux WSL verification has now been completed. Hosted GitHub CI remains unrun.
+Linux WSL verification had been completed at that checkpoint. Hosted GitHub CI had
+not yet run; subsequent publication results are recorded in
+[docs/publication-audit.md](docs/publication-audit.md) and its linked GitHub runs.
 
 - Independent clean-checkout Windows tests on Rust 1.92.0: all 32 pass (20 library,
   3 headless desktop, 9 real-media integration). Windows strict Clippy/formatting and
@@ -118,3 +120,41 @@ Linux WSL verification has now been completed. Hosted GitHub CI remains unrun.
 See [docs/publication-audit.md](docs/publication-audit.md) for reproducible commands,
 provenance and exact limitations. Clean-account Windows installation, interactive native GUI,
 Explorer/PE icon packaging, signing and the remaining production roadmap are still pending.
+
+## rfd 0.17.2 dependency update (PR #2)
+
+Validated locally on 2026-10-10 after bringing the upgrade branch up to `main` at
+342f3bb (merged checkout-action PR #1), without rewriting the existing PR history.
+
+- Baseline Windows suite on rfd 0.15.4: all 32 tests passed before the update.
+- Updated Windows suite: all 32 tests pass, including nine real-media regressions;
+  strict all-target/all-feature Clippy, formatting and the release build pass.
+- Ubuntu 22.04 WSL with Rust 1.92.0 and the previously verified modern media tools:
+  all 32 tests, strict Clippy, formatting and inventory freshness pass. These checks
+  compile the Linux backend; they do not operate interactive portal/zenity dialogs.
+- Reviewed graph change: rfd is the only added package version; its former version
+  and 43 transitive package entries are removed. External package count falls from
+  376 to 333. There are no new declared license expressions; both packaged rfd MIT
+  notices are inventoried. The same two previously recorded notice gaps remain.
+- Cargo-deny license/source policy and refreshed RustSec audit pass without warnings;
+  the latter scanned 334 packages against 1296 advisories. The inventory matches on
+  Windows and Linux and records the new lockfile fingerprint.
+
+The updated branch incorporates the actual-binary Windows FFmpeg CI setup and
+checkout v7.0.1. Fresh hosted results for this exact upgrade are available in
+[PR #2's checks](https://github.com/MrQuality/timestamp-cleaner/pull/2/checks); earlier
+failed/stalled runs predate these repairs. The owner subsequently reported that the
+MKV and MP4 workflows work in manual testing. See the scoped smoke-test evidence below.
+The open/save/cancel, non-ASCII path and format-filter smoke tests are documented in
+[manual-verification.md](docs/manual-verification.md#native-dialog-upgrade-pr-2).
+
+### User-reported MKV and MP4 smoke tests
+
+On 2026-10-10, following the PR #2 repair at eccac64, the owner reported:
+"manually verified that mkv works."
+The owner then confirmed: "Mp4 also works, I verified".
+These reports record successful user-reported MKV and MP4 workflow smoke tests. The exact tested
+binary/commit, OS, tool versions and individual observations were not specified.
+It does not establish separate audio/playback, extension/filter, overwrite-protection,
+dialog-cancellation, non-ASCII-path or Linux-desktop results. Those detailed
+checks remain pending; this report does not close the broader manual release gates.
