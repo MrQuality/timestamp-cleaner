@@ -69,3 +69,7 @@ A clean-account WinGet installation, offline failure and interactive native save
 checks remain unvalidated. This host already has both media tools; no actual download or
 installation was performed. Linux CI and production-readiness gates remain open as recorded
 in ROADMAP.md. The user-reported audio smoke test above predates this update.
+
+The outstanding native/installation scenarios and evidence requirements are tracked in
+[docs/manual-verification.md](docs/manual-verification.md). Manual fallback instructions are
+available in [docs/media-tools.md](docs/media-tools.md). These documents do not change test results.

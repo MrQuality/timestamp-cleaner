@@ -20,6 +20,9 @@ prompt explains that installation accepts the package/source terms. Both tools a
 before the application enables media operations. Microsoft App Installer (WinGet) must be present;
 if it is unavailable or installation fails, the application stays disabled with recovery instructions.
 Linux currently requires installation through the system package manager.
+See [manual installation and recovery](docs/media-tools.md) if automatic setup fails.
+Clean-account installation is still unverified; the pending scenarios are listed in
+[manual verification](docs/manual-verification.md).
 
 For manual setup, the FFmpeg build must support `libx264`, `delogo`, and PNG encoding. Executables
 in the current working directory are not discovered implicitly. Absolute paths can instead be
