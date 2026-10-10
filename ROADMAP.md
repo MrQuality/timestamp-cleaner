@@ -13,6 +13,13 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] Export collision protection and temporary output cleanup.
 - [x] Windows/Linux CI definition and dependency audit gate.
 - [ ] Manual GUI validation on a normal interactive Windows desktop.
+- [x] User-reported smoke test: successful video generation with audio.
+
+## Dependency management and output formats
+
+- [ ] Detect each required media tool at startup and offer installation with explicit consent.
+- [ ] Keep media operations disabled when dependencies are missing or installation is declined.
+- [ ] Select MKV or MP4 with explicit audio compatibility behavior.
 
 ## Algorithm parity and mask editor
 

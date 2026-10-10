@@ -33,3 +33,10 @@ No installer, signing, long-duration soak, real-footage benchmark or full OS cod
 
 No family footage is included in the test fixtures. Tests synthesize short local video and audio.
 Visual restoration quality on the user's recordings still needs manual assessment.
+
+## User-reported smoke test
+
+On 2026-10-10, the user reported successful video generation with audio using the application.
+This confirms their export/playback smoke test. The input properties, selected settings and
+output container were not supplied, so this report does not establish a broader format,
+timing, accessibility or restoration-quality result. It is separate from automated test evidence.
