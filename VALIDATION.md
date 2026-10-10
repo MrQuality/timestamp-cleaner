@@ -2,6 +2,11 @@
 
 ## Windows ZIP automation preparation (2026-10-10)
 
+The owner reports no clean Windows VM/second PC is available and explicitly
+deferred clean-machine installation/dependency recovery verification to beta
+testing. These scenarios remain **unverified**, rather than failed or passed.
+The beta's notes must state the limitation; production-readiness gates remain open.
+
 ### Hosted PR #4 follow-up
 
 All seven checks passed at `ae25dce` in

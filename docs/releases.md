@@ -41,10 +41,12 @@ does not establish that the public binary release gates have passed.
    not establish licensing clearance.
 5. Resolve executable branding/version metadata and review runtime DLL requirements.
    The runtime window icon exists; the Windows PE icon resource is still pending.
-6. Test the actual package on a clean Windows x64 host. Record native GUI, MKV/MP4
-   playback/audio, cancellation, collision and dependency installation/decline/
-   offline/manual recovery results with commit/tool/OS versions in VALIDATION.md.
-   See [manual-verification.md](manual-verification.md).
+6. Test the actual package on the available Windows x64 desktop. Record native
+   GUI, MKV/MP4 playback/audio, cancellation and collision results with commit/
+   tool/OS versions in VALIDATION.md. The owner has no clean Windows host and
+   explicitly deferred clean-machine installation/dependency recovery verification
+   to beta testing. Label those scenarios unverified in the beta release notes;
+   they remain production-readiness gates. See [manual-verification.md](manual-verification.md).
 7. Keep the release in draft until its selected
    [binary-release gates](open-source-readiness.md#before-a-public-binary-release)
    pass. Replace candidate notes with verified scope and known limitations before
