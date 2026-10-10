@@ -237,3 +237,13 @@ binary/commit, OS, tool versions and individual observations were not specified.
 It does not establish separate audio/playback, extension/filter, overwrite-protection,
 dialog-cancellation, non-ASCII-path or Linux-desktop results. Those detailed
 checks remain pending; this report does not close the broader manual release gates.
+
+## Public beta.1 publication
+
+On 2026-10-10, at the owner's request, the existing verified release was changed
+from draft to public prerelease. GitHub reports `isDraft=false` and `isPrerelease=true`;
+publication explicitly used `--latest=false`. Both asset IDs and SHA-256 digests
+match the previously inspected draft. The tag, executable and ZIP were unchanged.
+Release notes disclose pending desktop/clean-machine testing, branding and
+artifact-specific notice review. Publication itself supplies no additional runtime
+or license-review evidence.

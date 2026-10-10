@@ -25,7 +25,17 @@ Actions are pinned by full revision; checkout does not retain Git credentials.
 Existing releases/assets are not overwritten. A rerun with an existing draft
 will fail at creation; inspect the existing draft rather than silently replacing it.
 
-## Preparing v0.1.0-beta.1
+## Published beta.1
+
+On 2026-10-10, the owner requested public beta availability. The verified existing
+ZIP and checksum were published as [v0.1.0-beta.1](https://github.com/MrQuality/timestamp-cleaner/releases/tag/v0.1.0-beta.1),
+retaining prerelease status and without marking it latest. The tag and assets were unchanged.
+This owner-directed early beta publication precedes completion of the checklist below;
+it does not establish production readiness. Exact-package desktop testing, clean-machine
+recovery, executable branding and artifact-specific notice review remain outstanding
+and are disclosed in the public release notes.
+
+## Beta.1 preparation checklist and outstanding work
 
 The package declares `0.1.0-beta.1` to prepare a draft candidate. Creating its tag
 does not establish that the public binary release gates have passed.
