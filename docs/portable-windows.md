@@ -4,6 +4,13 @@ This is an unsigned development build for Windows x64. It is not a supported
 production release. No Rust compiler or Visual Studio installation is required
 to use the application. Clean-machine runtime compatibility is still pending.
 
+The Microsoft Visual C++ **v14 Redistributable (x64)** is a runtime prerequisite:
+the MSVC build imports `VCRUNTIME140.dll`. If Windows reports that DLL missing
+or an incompatible runtime, install/update the x64 package from
+[Microsoft's supported downloads](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/)
+and retry. Use the complete official installer; do not download individual DLLs
+from third-party sites. The runtime is external, not bundled or installed by this ZIP.
+
 1. Compare the ZIP's SHA-256 with `SHA256SUMS.txt` from the same release/run:
    `Get-FileHash .\timestamp-cleaner-<version>-windows-x64.zip -Algorithm SHA256`.
    Checksums detect changed bytes; they do not authenticate the publisher.

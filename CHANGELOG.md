@@ -35,6 +35,9 @@ artifact-specific checks in [docs/releases.md](docs/releases.md).
 
 ### Known limitations
 
+- The Windows ZIP requires Microsoft's external Visual C++ v14 x64 runtime;
+  see the included START-HERE.md if Windows reports VCRUNTIME140.dll missing.
+
 - The repair algorithm is FFmpeg rectangle interpolation; the original Python
   Telea/Navier–Stokes algorithms and six-preset comparison are not implemented yet.
 - Automatic installation supports Windows/WinGet; Linux setup remains manual.

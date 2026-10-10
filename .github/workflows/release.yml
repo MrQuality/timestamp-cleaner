@@ -61,6 +61,8 @@ jobs:
           Download the ZIP and SHA256SUMS.txt together, verify the checksum and extract
           the entire ZIP. START-HERE.md contains setup and recovery instructions.
           FFmpeg/FFprobe are external and may be installed with consent through WinGet.
+          The Microsoft Visual C++ v14 Redistributable (x64) is also required;
+          see START-HERE.md for Microsoft's official runtime setup instructions.
 
           The executable is unsigned. The repair uses FFmpeg rectangle interpolation;
           this is not the original Python Telea/Navier-Stokes implementation.

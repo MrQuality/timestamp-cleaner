@@ -19,6 +19,12 @@ tested PR merge commit. ZIP size: 4,044,853 bytes; SHA-256:
 This is the `0.1.0` development preview, not the forthcoming beta.1 artifact.
 It does not establish clean-host GUI/runtime behavior or license clearance.
 PR #4 was subsequently merged normally at `e5aa807`.
+Static `dumpbin /DEPENDENTS` inspection of that preview's extracted executable
+shows `VCRUNTIME140.dll` and Windows API/UCRT/OpenGL imports. The portable guide
+and generated candidate notes now declare the external Microsoft Visual C++ v14
+x64 runtime prerequisite and link Microsoft's official setup instructions.
+The beta.1 executable still needs its own import inspection; neither static
+inspection nor an installed developer machine establishes clean-host behavior.
 
 ### Earlier local automation evidence
 
