@@ -2,6 +2,21 @@
 
 ## Windows ZIP automation preparation (2026-10-10)
 
+### Hosted PR #4 follow-up
+
+All seven checks passed at `ae25dce` in
+[run 38082225843](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38082225843).
+Downloaded `windows-portable-1` and independently verified the ZIP checksum,
+all 270 payload file hashes, 141 dependency notice sets and build metadata.
+The build commit `5a5e4bfff9cb2d17f599a83a880f5287cc804378` matches GitHub's
+tested PR merge commit. ZIP size: 4,044,853 bytes; SHA-256:
+`26d5efa01c5c64c1d68e1b141e7cec1323bbaa11f6247c00d15900435c37dae4`.
+This is the `0.1.0` development preview, not the forthcoming beta.1 artifact.
+It does not establish clean-host GUI/runtime behavior or license clearance.
+PR #4 was subsequently merged normally at `e5aa807`.
+
+### Earlier local automation evidence
+
 - Seven Python packaging/release-policy tests pass on Windows with Python 3.10.
   Tests cover notice tampering/path escape/missing notices, PE architecture,
   archived contents/checksums/no-overwrite, source-document links and beta/main guards.
