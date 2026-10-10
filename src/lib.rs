@@ -1,5 +1,6 @@
 pub mod dependencies;
 pub mod export;
+pub mod installer;
 pub mod media;
 pub mod model;
 pub mod process;
