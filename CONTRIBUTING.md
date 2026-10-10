@@ -13,6 +13,19 @@ For setup and checks, follow [README.md](README.md). Use issues for reproducible
 and scoped proposals, and pull requests for reviewed changes. Follow the private reporting
 guidance in [SECURITY.md](SECURITY.md) for vulnerabilities.
 
+## Collaboration expectations
+
+Keep technical disagreements focused on code and evidence. Be respectful, assume
+good faith and do not harass contributors. Maintainers may close abusive discussions
+or remove material that exposes personal data. There is no guaranteed support
+response time or supported stable release yet; current development targets main.
+A dedicated conduct-reporting contact and broader governance policy remain owner
+decisions before growing a contributor community.
+
+Keep personal test recordings outside the checkout or in the ignored `.local-media/`
+folder. Environment files and private signing bundles are also ignored; these patterns
+are convenience safeguards, not substitutes for review and full-history secret scanning.
+
 Keep commits small and coherent, with enough context to understand the work without the original
 conversation. Keep tests with their behavior changes and keep unrelated refactoring separate.
 Prefer 100–300 changed source lines when practical; correctness and reviewability take precedence

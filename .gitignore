@@ -2,3 +2,9 @@
 /.tools/
 *.partial
 *.log
+/.local-media/
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12

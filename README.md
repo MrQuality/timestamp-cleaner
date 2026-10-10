@@ -72,7 +72,11 @@ cargo build --locked --release
 The `media-tests` feature enables real-media integration tests. These generate small synthetic
 fixtures and require FFmpeg; missing tools fail rather than silently skip tests. For library-only
 development, use `cargo test --locked --no-default-features`. CI runs Windows and Linux checks
-and audits the locked dependency graph. Local Windows checks are recorded in [VALIDATION.md](VALIDATION.md).
+and audits the locked dependency graph. Local Windows/Linux evidence is recorded in [VALIDATION.md](VALIDATION.md).
+
+CI also checks Rust 1.92, dependency license/source policy, inventory freshness,
+workflow syntax and full-history secrets. Publication audit evidence and remaining
+owner decisions are recorded in [docs/publication-audit.md](docs/publication-audit.md).
 
 On Linux the desktop build also needs the platform development packages listed in CI.
 
@@ -100,3 +104,4 @@ update review for its selected components.
 
 The repository is being prepared for public development on GitHub. Remaining publication
 and release gates are tracked in [docs/open-source-readiness.md](docs/open-source-readiness.md).
+Development changes and known limitations are summarized in [CHANGELOG.md](CHANGELOG.md).

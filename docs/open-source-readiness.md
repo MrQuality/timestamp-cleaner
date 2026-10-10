@@ -15,19 +15,30 @@ not prevent hosting the application source on GitHub.
 - [x] Cargo.lock and Windows/Linux CI quality gates are tracked; actions use immutable revisions.
 - [x] Manual dependency recovery and outstanding verification scenarios are documented.
 - [x] Application artwork and its provenance are tracked in the project.
+- [x] Full-history secret scan and local privacy review; owner identity/rights decisions remain separate.
+- [x] Reproducible 376-package license inventory, source/license policy and upstream notice research.
+- [x] Clean-checkout Rust 1.92 testing on Windows/Linux, including real media; release and lint checks.
+- [x] CI minimum-Rust, license/source, inventory, secret-scan and workflow-syntax gates.
+- [x] Privacy-aware issue templates and basic contributor collaboration expectations.
+
+See [the dated publication audit](publication-audit.md) for scope, versions, failures,
+fixes and unresolved license/distribution limitations.
 
 ## Before making the source repository public
 
 - [ ] Confirm the maintainer's public identity/contact and rights to publish all original
   code/documentation/artwork under Apache-2.0. Review any employer or external contributions.
-- [ ] Review **all Git history**, not just the latest tree, for credentials, personal
+- [x] Review **all Git history**, not just the latest tree, for credentials, personal
   data, family media, machine paths and accidental proprietary material. Commit author
   emails are public metadata: choose deliberately. `.gitignore` does not remove history.
   Scan with a maintained secret-scanning tool and manually inspect flagged content;
-  revoke exposed credentials before remediation. No full-history secret scan is recorded yet.
-- [ ] Complete a dependency license review for source publication, preserving any notices
-  required by included/generated material; follow THIRD_PARTY.md. Review artwork identity
-  and avoid implying trademark clearance or exclusive rights to generated content.
+  revoke exposed credentials before remediation. Gitleaks found no secrets at the audited
+  tip; repeat before pushing new history. Owner approval of public author metadata remains open.
+- [x] Perform dependency declaration/source review and preserve available upstream/font
+  licensing records; follow THIRD_PARTY.md. Two unused-target/feature notice gaps and
+  per-binary redistribution review remain explicit; this is not legal clearance.
+- [ ] Confirm artwork identity/provenance is suitable for the public project; do not imply
+  trademark clearance or exclusive rights to generated content.
 - [ ] Choose the GitHub owner/repository name; create the repo and add its real URL to
   Cargo metadata and README. Do not add fabricated repository, badge or support URLs.
 - [ ] Enable and verify GitHub private vulnerability reporting or supply a tested private
@@ -35,10 +46,11 @@ not prevent hosting the application source on GitHub.
 - [ ] Enable branch rules requiring PR review and successful CI; restrict force pushes
   and deletion of the default branch. Keep workflow permissions minimal and secrets out of PR jobs.
 - [ ] Run the first GitHub CI build on Windows and Linux and inspect actual logs. Local
-  Windows checks do not prove Linux CI success. Decide whether to enforce the declared
-  minimum Rust version in CI in addition to stable-toolchain testing.
-- [ ] Set description/topics and confirm the clone/build instructions from a clean checkout.
-  Decide community conduct/moderation and maintenance expectations before inviting contributors.
+  checks do not prove hosted CI success. The declared minimum Rust version is now enforced
+  in the CI definition and has passed local Windows/Linux verification.
+- [x] Confirm clean-checkout build/test instructions locally and document collaboration/support limits.
+- [ ] Set description/topics and decide the conduct-reporting contact and broader governance
+  expectations before inviting a larger contributor community.
 
 Apache-2.0 application guidance is available from the
 [Apache Software Foundation](https://www.apache.org/licenses/LICENSE-2.0.html).

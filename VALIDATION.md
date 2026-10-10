@@ -84,3 +84,37 @@ No media processing code changed, so media regressions were not repeated for art
 Native taskbar, Explorer and high-DPI appearance remain unverified. The standalone
 Windows executable does not yet embed a PE icon resource; the ICO is available for
 that future packaging step.
+
+## Publication preparation and Linux portability
+
+Validated on 2026-10-10 at application commit 06daae7 and its unchanged locked graph.
+Earlier statements about missing Linux local evidence describe the historical runs above;
+Linux WSL verification has now been completed. Hosted GitHub CI remains unrun.
+
+- Independent clean-checkout Windows tests on Rust 1.92.0: all 32 pass (20 library,
+  3 headless desktop, 9 real-media integration). Windows strict Clippy/formatting and
+  updated release build pass on the default Rust 1.93.0 toolchain.
+  The updated independent-checkout release build also passes on Rust 1.92.0.
+- Ubuntu 22.04 WSL, Rust 1.92.0, FFmpeg/FFprobe n8.1.3-17-gc389840894-20261010:
+  all 32 tests, release build, strict all-target/all-feature Clippy and formatting pass.
+  Modern tools were downloaded from an FFmpeg-linked provider and checksum-verified.
+- The initial Linux suite failed seven integration tests using distribution FFmpeg/FFprobe
+  4.4.2. Startup now verifies the repair/timing pipeline and required rotation schema;
+  the shared diagnostic rejects these old tools and accepts the modern build. This was
+  a compatibility finding, not a silently skipped fixture or successful old-tool result.
+- An isolated inverted FFprobe schema guard fails its regression on Rust 1.92.0.
+  Original checkout contents were restored; primary source was never mutated.
+- Cargo-deny 0.20.2 license/source policy and the 376-package inventory pass. Inventory
+  output is reproducible on both platforms; wrong hashes and stale inventory are rejected.
+  Upstream documents for 46 missing-notice packages are preserved; two unused-target/feature
+  gaps and per-binary notice review remain open. This is not a complete legal clearance.
+- Gitleaks 8.30.1 finds no secrets in 16 reachable commits through 06daae7, with no custom
+  suppression. An isolated deleted synthetic token is detected. Actionlint 1.7.12 passes.
+- Refreshed cargo-audit 0.22.2 `audit --deny warnings` passes: 1296 advisories and
+  377 locked packages scanned. Reachable commit-message bodies also pass secret/path review.
+- Source-package file-list and historical-path reviews found no family footage or ignored
+  tooling in the distributable source list. Author identity/ownership remains an owner decision.
+
+See [docs/publication-audit.md](docs/publication-audit.md) for reproducible commands,
+provenance and exact limitations. Clean-account Windows installation, interactive native GUI,
+Explorer/PE icon packaging, signing and the remaining production roadmap are still pending.

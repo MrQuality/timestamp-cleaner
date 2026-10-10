@@ -22,6 +22,7 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] Select MKV or MP4 with explicit audio compatibility behavior.
 - [ ] Validate installation end to end on a clean Windows account, including one missing component and offline failure; follow [the pending manual checklist](docs/manual-verification.md).
 - [x] Document manual package-manager/archive setup and recovery for missing components.
+- [x] Reject incompatible tool builds using repair/timing and rotation-schema capability checks.
 
 ## Algorithm parity and mask editor
 
@@ -52,9 +53,13 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] Apache-2.0 license and package metadata; contribution and security-reporting guidance.
 - [x] Tracked application icon, native-window integration and provenance.
 - [x] GitHub update configuration and pull-request template.
-- [ ] Complete ownership, full-history privacy/secret and third-party license reviews.
+- [x] Full-history secret/privacy audit and reproducible dependency declaration/source inventory.
+- [x] Local Windows/Linux minimum-Rust tests, release builds and quality checks.
+- [ ] Owner approval of publication rights, public Git identity and artwork identity.
+- [ ] Complete per-binary notices and review remaining unused-target/feature license gaps.
 - [ ] Configure the real GitHub repository, private reporting and branch/security settings.
-- [ ] Verify Windows/Linux CI on GitHub and clean-checkout build instructions.
+- [x] Verify clean-checkout build/test instructions locally; enforce additional publication checks in CI.
+- [ ] Verify Windows/Linux CI on GitHub.
 - [ ] Embed the Windows executable/installer icon resource and inspect native appearance.
 
 Follow [the publication checklist](docs/open-source-readiness.md) for evidence and the
