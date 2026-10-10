@@ -1,0 +1,18 @@
+# Imperative subject describing one concrete outcome (aim for <=72 characters)
+
+Context:
+# Why this change is needed; include the relevant problem or design constraint.
+
+Changes:
+# What this commit delivers. Explain significant decisions, not every edited file.
+
+Validation:
+# Checks actually performed and their results. State any checks not run and why.
+
+Progress:
+# Identify the roadmap milestone advanced, what now works, and relevant remaining limits.
+
+Next:
+# Name the next concrete step, or say that this task is complete.
+
+# Keep each section concise. Do not commit empty fields, prompts, secrets, or private media paths.
