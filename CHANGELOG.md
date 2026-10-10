@@ -5,6 +5,12 @@ development project; it does not imply a supported or production-ready release.
 
 ## Unreleased
 
+## 0.1.0-beta.1 — draft candidate
+
+This version prepares the first Windows x64 portable ZIP for verification. Its
+tag creates a draft prerelease; public binary publication remains pending the
+artifact-specific checks in [docs/releases.md](docs/releases.md).
+
 ### Added
 
 - Rust native desktop interface with video loading, source-coordinate rectangle
@@ -18,6 +24,8 @@ development project; it does not imply a supported or production-ready release.
 - Application artwork and a native window icon; PNG/ICO assets and provenance.
 - Apache-2.0 licensing, contribution guidance, issue/PR templates and local publication
   audits, plus Windows/Linux CI quality, minimum-Rust and security/license checks.
+- Windows portable ZIP previews with dependency notices, build metadata, file
+  hashes and SHA-256 checksums; matching beta tags prepare draft GitHub prereleases.
 
 ### Fixed during development
 
@@ -26,6 +34,9 @@ development project; it does not imply a supported or production-ready release.
   behavior and FFprobe's rotation schema; incompatible tools now keep processing disabled.
 
 ### Known limitations
+
+- The Windows ZIP requires Microsoft's external Visual C++ v14 x64 runtime;
+  see the included START-HERE.md if Windows reports VCRUNTIME140.dll missing.
 
 - The repair algorithm is FFmpeg rectangle interpolation; the original Python
   Telea/Navier–Stokes algorithms and six-preset comparison are not implemented yet.

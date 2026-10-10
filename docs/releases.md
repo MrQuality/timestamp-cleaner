@@ -27,28 +27,35 @@ will fail at creation; inspect the existing draft rather than silently replacing
 
 ## Preparing v0.1.0-beta.1
 
-The project currently declares `0.1.0` for development. No beta tag is created by
-this change. Before tagging:
+The package declares `0.1.0-beta.1` to prepare a draft candidate. Creating its tag
+does not establish that the public binary release gates have passed.
 
-1. In a small PR, set Cargo's version to `0.1.0-beta.1`, regenerate Cargo.lock and
-   `docs/dependency-licenses.csv`, update CHANGELOG.md, and merge after CI passes.
-2. Verify the exact Windows dependency notices, including embedded fonts and
-   supplemental upstream attributions. Packaging copies available declarations
-   and fails on missing/changed notices; it does not establish licensing clearance.
-3. Resolve executable branding/version metadata and review runtime DLL requirements.
+1. Merge the small version/lockfile/inventory/changelog PR after CI passes.
+2. Create an annotated `v0.1.0-beta.1` tag on that merged main commit and push it.
+   Inspect the tag workflow's source validation, seven quality gates and draft job.
+3. Download the draft's **actual attached ZIP** and checksum. Confirm its build-info
+   commit and checksum. Earlier preview evidence does not prove this build passed.
+4. Before public distribution, review the exact Windows dependency notices,
+   including embedded fonts and supplemental upstream attributions. Packaging
+   copies available declarations and fails on missing/changed notices; it does
+   not establish licensing clearance.
+5. Resolve executable branding/version metadata and review runtime DLL requirements.
    The runtime window icon exists; the Windows PE icon resource is still pending.
-4. On main, run `gh workflow run release.yml --ref main`; inspect all seven gates
-  and download its `windows-portable-<attempt>` artifact. Test on a clean Windows x64 host.
-5. Record native GUI, MKV/MP4 playback/audio, cancellation, collision, dependency
-   installation/decline/offline/manual recovery results with commit/tool/OS versions
-   in VALIDATION.md. See [manual-verification.md](manual-verification.md).
-6. Merge the validation/release notes, then create an annotated `v0.1.0-beta.1`
-   tag on the selected main commit and push that tag. Never move a published tag.
-7. Inspect the new draft and test its **actual attached ZIP**. Confirm the build-info
-   commit and checksum. Local/manual preview evidence does not prove this build passed.
-8. Replace candidate notes with verified scope and limitations, complete the
-   [binary-release checklist](open-source-readiness.md#before-a-public-binary-release),
-   then publish the draft as a prerelease. Do not mark it a stable/latest release.
+6. Test the actual package on the available Windows x64 desktop. Record native
+   GUI, MKV/MP4 playback/audio, cancellation and collision results with commit/
+   tool/OS versions in VALIDATION.md. The owner has no clean Windows host and
+   explicitly deferred clean-machine installation/dependency recovery verification
+   to beta testing. Label those scenarios unverified in the beta release notes;
+   they remain production-readiness gates. See [manual-verification.md](manual-verification.md).
+7. Keep the release in draft until its selected
+   [binary-release gates](open-source-readiness.md#before-a-public-binary-release)
+   pass. Replace candidate notes with verified scope and known limitations before
+   publishing it as a prerelease. Do not mark it a stable/latest release.
+
+Never move a release tag to incorporate later fixes. If branding, runtime or other
+changes are needed after tagging beta.1, prepare beta.2 through another reviewed
+version PR and tag, then repeat verification on that package. A draft may remain
+unpublished; preserve the source/build evidence rather than silently replacing it.
 
 No installer, signing certificate or paid packaging service is required for the
 ZIP pipeline. Builds are unsigned and that status must remain visible. Signing,

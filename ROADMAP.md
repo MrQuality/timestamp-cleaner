@@ -66,9 +66,12 @@ a usable native GUI and a media pipeline; it is not the completed product.
 
 - [x] ZIP packaging with verified Windows dependency notice copies, build metadata and checksums.
 - [x] Actions preview artifacts and beta-tag draft release automation; public publication remains manual.
-- [ ] Inspect the first hosted packaged artifact and complete its target-specific notice review.
+- [x] Inspect the first hosted packaged artifact and verify its hashes/build metadata.
+- [ ] Complete the packaged artifact's target-specific notice review.
+- [ ] Create and verify the `v0.1.0-beta.1` tag workflow and draft assets.
 - [ ] Embed executable branding/version resources and verify clean-host runtime dependencies.
-- [ ] Complete clean-Windows/manual artifact gates and publish `v0.1.0-beta.1`.
+- [ ] Verify the beta package on an available Windows desktop and publish a prerelease with explicit limitations.
+- [ ] Validate clean-Windows installation/dependency recovery during beta testing, before production readiness.
 
 See [release instructions](docs/releases.md). ZIP delivery is the current scope;
 MSI/installers, code signing and Linux packages are deferred.

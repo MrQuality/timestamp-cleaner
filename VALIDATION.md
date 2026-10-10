@@ -2,6 +2,32 @@
 
 ## Windows ZIP automation preparation (2026-10-10)
 
+The owner reports no clean Windows VM/second PC is available and explicitly
+deferred clean-machine installation/dependency recovery verification to beta
+testing. These scenarios remain **unverified**, rather than failed or passed.
+The beta's notes must state the limitation; production-readiness gates remain open.
+
+### Hosted PR #4 follow-up
+
+All seven checks passed at `ae25dce` in
+[run 38082225843](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38082225843).
+Downloaded `windows-portable-1` and independently verified the ZIP checksum,
+all 270 payload file hashes, 141 dependency notice sets and build metadata.
+The build commit `5a5e4bfff9cb2d17f599a83a880f5287cc804378` matches GitHub's
+tested PR merge commit. ZIP size: 4,044,853 bytes; SHA-256:
+`26d5efa01c5c64c1d68e1b141e7cec1323bbaa11f6247c00d15900435c37dae4`.
+This is the `0.1.0` development preview, not the forthcoming beta.1 artifact.
+It does not establish clean-host GUI/runtime behavior or license clearance.
+PR #4 was subsequently merged normally at `e5aa807`.
+Static `dumpbin /DEPENDENTS` inspection of that preview's extracted executable
+shows `VCRUNTIME140.dll` and Windows API/UCRT/OpenGL imports. The portable guide
+and generated candidate notes now declare the external Microsoft Visual C++ v14
+x64 runtime prerequisite and link Microsoft's official setup instructions.
+The beta.1 executable still needs its own import inspection; neither static
+inspection nor an installed developer machine establishes clean-host behavior.
+
+### Earlier local automation evidence
+
 - Seven Python packaging/release-policy tests pass on Windows with Python 3.10.
   Tests cover notice tampering/path escape/missing notices, PE architecture,
   archived contents/checksums/no-overwrite, source-document links and beta/main guards.

@@ -68,6 +68,10 @@ preserve applicable upstream notices and assess what is actually incorporated.
 
 - [ ] Complete the clean-Windows installation and native interaction scenarios in
   [manual-verification.md](manual-verification.md), including manual setup and offline failure.
+  The owner explicitly deferred clean-machine installation/dependency recovery to
+  beta testing because no clean host is available. A beta may retain that limitation
+  when its release notes label these scenarios unverified; production readiness
+  still requires them. This exception does not establish that the scenarios pass.
 - [ ] Close the selected release's security, accessibility, correctness and performance
   gates in ROADMAP.md; do not advertise the current development milestone as production ready.
 - [ ] Produce an exact dependency/font license inventory and required notice bundle for

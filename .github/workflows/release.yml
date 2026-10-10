@@ -61,13 +61,19 @@ jobs:
           Download the ZIP and SHA256SUMS.txt together, verify the checksum and extract
           the entire ZIP. START-HERE.md contains setup and recovery instructions.
           FFmpeg/FFprobe are external and may be installed with consent through WinGet.
+          The Microsoft Visual C++ v14 Redistributable (x64) is also required;
+          see START-HERE.md for Microsoft's official runtime setup instructions.
 
           The executable is unsigned. The repair uses FFmpeg rectangle interpolation;
           this is not the original Python Telea/Navier-Stokes implementation.
 
+          Clean-machine Windows installation and dependency recovery are unverified.
+          The owner deferred those scenarios to beta testing; production readiness
+          still requires them.
+
           Before publishing: review the included third-party notices, inspect executable
-          branding/runtime requirements, complete clean-machine MKV/MP4 and dependency
-          setup tests on this exact artifact, and replace these candidate notes with
+          branding/runtime requirements, complete Windows MKV/MP4 smoke tests on this
+          exact artifact, and replace these candidate notes with
           dated results and known limitations. See docs/releases.md in the source repo.
           EOF
           gh release create "$RELEASE_TAG" dist/*.zip dist/SHA256SUMS.txt \
