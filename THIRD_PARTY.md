@@ -9,13 +9,41 @@ Cargo.toml and Cargo.lock record the direct and resolved dependencies. The deskt
 uses eframe/egui, including its default fonts, rfd and platform libraries, plus the
 image and media-support crates. A vulnerability audit is **not** a license audit.
 
-A complete transitive license/notice inventory has **not yet been completed**.
-Before distributing binaries, enumerate the exact locked graph for each release
+The [generated inventory](docs/dependency-licenses.csv) covers 376 external packages
+resolved by `cargo metadata --locked --all-features`, including packages for targets
+and optional dependencies that may not be part of a particular binary. Every row
+records the declared license, version, source/repository, lockfile fingerprint and
+packaged notice-file hashes. No absolute cache paths are published.
+
+`deny.toml` defines the accepted code/font license declarations and rejects unknown
+registry/Git sources. Cargo-deny 0.20.2 passes `--locked --all-features check licenses
+sources` without warnings for the current graph. SPDX declaration checks do not
+inspect every embedded source/font notice and do not establish legal clearance.
+
+Forty-eight packages have no conventional license/notice file in the downloaded
+crate and are marked `upstream-review-needed`. egui/font terms have separately
+been preserved in [third-party/](third-party/README.md) using exact source provenance;
+Hack's notice includes Bitstream Vera terms beyond the aggregate SPDX declaration.
+The inventory is **not a completed distribution notice bundle**. Before distributing
+binaries, enumerate the exact locked graph for each release
 target and feature set, inspect the included license and NOTICE files (including
 font licenses), resolve ambiguous/missing declarations, and include the required
 license texts and attributions with that artifact. Record the review against the
 release commit and regenerate it when dependencies or features change. Do not
 label this document a completed third-party notice bundle.
+
+Regenerate and check the inventory with Python 3.10+ and Cargo:
+
+```sh
+python scripts/dependency_licenses.py
+python scripts/dependency_licenses.py --check
+cargo install cargo-deny --version 0.20.2 --locked
+cargo deny --locked --all-features check licenses sources
+```
+
+Regeneration fetches missing registry crates through Cargo. Review changed declarations,
+sources and notices before accepting inventory changes. A stale inventory fails `--check`;
+adding a license allowance requires review rather than automatically copying new declarations.
 
 ## FFmpeg and codecs
 
