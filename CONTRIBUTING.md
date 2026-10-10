@@ -1,5 +1,18 @@
 # Development and commit workflow
 
+## Contributions and licensing
+
+Original project material is licensed under Apache-2.0; see [LICENSE](LICENSE).
+Submit only work you have the right to contribute under that license. Intentionally
+submitted contributions are accepted under Apache-2.0 unless explicitly stated otherwise
+and agreed by the maintainers. Preserve applicable third-party notices, and identify any
+borrowed code, artwork or new dependencies in the pull request. Do not submit family
+footage, credentials or personal data; use synthetic regression fixtures.
+
+For setup and checks, follow [README.md](README.md). Use issues for reproducible bugs
+and scoped proposals, and pull requests for reviewed changes. Follow the private reporting
+guidance in [SECURITY.md](SECURITY.md) for vulnerabilities.
+
 Keep commits small and coherent, with enough context to understand the work without the original
 conversation. Keep tests with their behavior changes and keep unrelated refactoring separate.
 Prefer 100–300 changed source lines when practical; correctness and reviewability take precedence

@@ -1,5 +1,7 @@
 # Timestamp Cleaner
 
+<img src="assets/icon.png" alt="Timestamp Cleaner: a film frame, mountain landscape and restoration sparkle" width="128" />
+
 A Rust desktop application for repairing fixed camera timestamps in local family videos.
 
 **Status: first working development milestone, not a production release.** The current repair
@@ -84,6 +86,13 @@ On Linux the desktop build also needs the platform development packages listed i
 See [SECURITY.md](SECURITY.md) for the threat model and [docs/architecture.md](docs/architecture.md)
 for pipeline design and limitations. The earlier Python scripts remain untouched outside this repository.
 
-FFmpeg is externally installed, not bundled. Distribution of a bundled build needs a separate
-license and update review for its selected components. This repository does not yet grant a public
-software license; choose one before publishing it.
+## License and publication
+
+Original project code and documentation are licensed under [Apache License 2.0](LICENSE).
+The generated icon's provenance and licensing scope are recorded in [assets/README.md](assets/README.md).
+Third-party dependencies retain their own licenses; see [THIRD_PARTY.md](THIRD_PARTY.md).
+FFmpeg is externally installed, not bundled. A bundled build needs a separate license and
+update review for its selected components.
+
+The repository is being prepared for public development on GitHub. Remaining publication
+and release gates are tracked in [docs/open-source-readiness.md](docs/open-source-readiness.md).

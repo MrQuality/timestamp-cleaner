@@ -51,4 +51,15 @@ changelog and affected behavior. Do not suppress advisories without a documented
 assessment. Before a release, also review FFmpeg provenance, licensing, codec vulnerabilities,
 installer signing and the manually tested Windows accessibility flow.
 
-Report issues privately to the repository owner until a dedicated reporting address is established.
+## Reporting vulnerabilities
+
+Do not post exploit details, sensitive media or credentials in public issues. When this
+repository is published on GitHub, maintainers must enable **Private vulnerability reporting**
+before advertising that channel. Once enabled, use **Security > Advisories > Report a
+vulnerability** on the repository. See [GitHub's private reporting instructions](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).
+
+No public repository URL or dedicated private contact has been configured yet. Establish
+and verify a private reporting route before publication; this file alone does not enable it.
+Include the affected commit/version, OS and tool versions, impact and synthetic reproduction
+steps. Redact personal paths. There is no supported stable release or promised response SLA
+yet; development fixes target the current main branch.

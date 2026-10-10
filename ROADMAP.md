@@ -47,5 +47,18 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - Signed Windows installer, dependency notices, update and support policy.
 - No unresolved high-severity dependency advisories; reviewed release checklist.
 
+## Open-source publication
+
+- [x] Apache-2.0 license and package metadata; contribution and security-reporting guidance.
+- [x] Tracked application icon, native-window integration and provenance.
+- [x] GitHub update configuration and pull-request template.
+- [ ] Complete ownership, full-history privacy/secret and third-party license reviews.
+- [ ] Configure the real GitHub repository, private reporting and branch/security settings.
+- [ ] Verify Windows/Linux CI on GitHub and clean-checkout build instructions.
+- [ ] Embed the Windows executable/installer icon resource and inspect native appearance.
+
+Follow [the publication checklist](docs/open-source-readiness.md) for evidence and the
+distinction between publishing development source and distributing production binaries.
+
 Temporal reconstruction and moving-overlay tracking follow measurement of real footage quality.
 They are separate restoration features, not assumed consequences of switching to Rust.
