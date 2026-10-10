@@ -41,6 +41,12 @@ in this milestone. A hostile local process that changes files or replaces truste
 processing is outside the current threat model. Metadata is re-probed before export, but source
 content is not hashed or locked against concurrent modification.
 
+Configure the actual FFmpeg/FFprobe binaries, not executable launchers that spawn another
+process. In particular, Chocolatey's shim executables can leave a descendant holding pipe
+handles after the launcher is terminated, blocking cancellation/timeout cleanup. Hosted CI
+uses the actual package binaries through explicit tool-path overrides. Process-tree supervision
+is a remaining production gate; the current supervisor terminates its immediate child only.
+
 Output metadata can contain source identifying information such as creation dates and location.
 Metadata stripping is planned before a public release. Application errors may contain local paths;
 there is no telemetry, remote crash reporting, or persistent application log in this milestone.
