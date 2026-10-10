@@ -12,50 +12,7 @@ use std::{
 
 const FORMATS: &str = "mov,matroska,webm,avi,mpegts,mpeg,ogg";
 
-#[derive(Clone, Debug)]
-pub struct Tools {
-    pub ffmpeg: PathBuf,
-    pub ffprobe: PathBuf,
-}
-
-impl Tools {
-    pub fn discover() -> Result<Self> {
-        Ok(Self {
-            ffmpeg: executable("ffmpeg")?,
-            ffprobe: executable("ffprobe")?,
-        })
-    }
-}
-
-fn executable(name: &str) -> Result<PathBuf> {
-    let key = format!("TIMESTAMP_CLEANER_{}", name.to_uppercase());
-    if let Some(value) = std::env::var_os(&key) {
-        let path = PathBuf::from(value);
-        if path.is_absolute() && path.is_file() {
-            return Ok(path.canonicalize()?);
-        }
-        return Err(Error::Invalid(format!(
-            "{key} must name an absolute executable file"
-        )));
-    }
-    let filename = format!("{name}{}", std::env::consts::EXE_SUFFIX);
-    let cwd = std::env::current_dir()?.canonicalize()?;
-    if let Some(paths) = std::env::var_os("PATH") {
-        for folder in std::env::split_paths(&paths) {
-            // Do not execute tools supplied by the current media/project directory.
-            if !folder.is_absolute() || folder.canonicalize().ok().as_ref() == Some(&cwd) {
-                continue;
-            }
-            let candidate = folder.join(&filename);
-            if candidate.is_file() {
-                return Ok(candidate.canonicalize()?);
-            }
-        }
-    }
-    Err(Error::Invalid(format!(
-        "Install a trusted FFmpeg build containing {filename}, add it to PATH, or set {key}"
-    )))
-}
+pub use crate::dependencies::Tools;
 
 #[derive(Debug, Deserialize)]
 struct Probe {
