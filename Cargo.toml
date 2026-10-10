@@ -22,7 +22,7 @@ thiserror = "2"
 tempfile = "3"
 image = { version = "0.25", default-features = false, features = ["png"] }
 eframe = { version = "0.35", optional = true, default-features = false, features = ["default_fonts", "glow", "x11", "wayland"] }
-rfd = { version = "0.15", optional = true }
+rfd = { version = "0.17", optional = true }
 
 [[bin]]
 name = "timestamp-cleaner"
