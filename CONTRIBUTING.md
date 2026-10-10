@@ -26,6 +26,12 @@ Keep personal test recordings outside the checkout or in the ignored `.local-med
 folder. Environment files and private signing bundles are also ignored; these patterns
 are convenience safeguards, not substitutes for review and full-history secret scanning.
 
+Put local audit reports, logs and downloaded developer tools in `.tools/`. Keep
+`Cargo.lock`, synthetic media fixtures, artwork and shared editor configuration tracked.
+Sanitized `.env.example` and `.env.*.example` templates are allowed, but must contain
+no real credentials. Use `.git/info/exclude` for personal editor or workstation patterns
+that do not apply to other contributors. Ignore rules do not remove already tracked files.
+
 Keep commits small and coherent, with enough context to understand the work without the original
 conversation. Keep tests with their behavior changes and keep unrelated refactoring separate.
 Prefer 100–300 changed source lines when practical; correctness and reviewability take precedence

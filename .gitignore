@@ -1,10 +1,34 @@
+# Rust build output and rustfmt backups. Keep Cargo.lock tracked for this app.
 /target/
+**/*.rs.bk
+
+# Local developer tools, audit reports and logs belong here.
 /.tools/
-*.partial
-*.log
+
+# Python maintenance-script caches and an optional local virtual environment.
+__pycache__/
+*.pyc
+*.pyo
+/.venv/
+
+# Personal recordings and the export pipeline's temporary files.
+# Do not ignore all media extensions: synthetic fixtures and icons are source assets.
 /.local-media/
+.timestamp-cleaner-*.partial
+
+# Local environment secrets and private signing bundles.
+# Sanitized example files may be committed; review their contents first.
 .env
 .env.*
 !.env.example
+!.env.*.example
 *.pfx
 *.p12
+
+# OS metadata and editor recovery files. Shared editor settings stay trackable.
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
