@@ -1,0 +1,42 @@
+# Delivery plan and release gates
+
+The acceptance target is a production desktop application. The first milestone establishes
+a usable native GUI and a media pipeline; it is not the completed product.
+
+## First milestone
+
+- [x] Separate project folder, Git repository and Cargo lockfile.
+- [x] GUI selection, source-coordinate rectangle editing and before/after frame previews.
+- [x] Export one chosen repair with quality controls.
+- [x] Worker cancellation, bounded subprocess I/O, explicit resource limits.
+- [x] Audio-copy and VFR timing regression fixtures; failures never publish success.
+- [x] Export collision protection and temporary output cleanup.
+- [x] Windows/Linux CI definition and dependency audit gate.
+- [ ] Manual GUI validation on a normal interactive Windows desktop.
+
+## Algorithm parity and mask editor
+
+- Reproducible, pinned OpenCV/Clang/native FFmpeg development and runtime packages.
+- Typed six-preset selector matching the original Python values exactly.
+- Telea and Navier–Stokes implementation through OpenCV with independent radius and dilation.
+- Source-coordinate brush, rectangle, eraser, undo/redo and binary mask import/export.
+- Explicit mask-size mismatch handling; no silent stretching.
+- Quality comparisons against Python reference outputs and synthetic overlaid timestamps.
+- Short segment playback preview; optional six-preset comparison processes previews only.
+
+## Production readiness
+
+- Rotation, sample-aspect-ratio and color metadata handling; explicit HDR/alpha policy.
+- Image workflow with EXIF orientation, ICC and supported bit-depth policies.
+- Versioned projects, reusable timestamp masks and sequential batch queue.
+- Output MP4 option with explicit codec compatibility and audio conversion choices.
+- Metadata privacy control; subtitle/additional video stream preservation policy.
+- OS-enforced subprocess memory/CPU limits and strengthened executable provenance checks.
+- Representative 1080p/4K performance baselines, cancellation latency and long-video soak tests.
+- Crash recovery, disk-full, publication-race, malformed codec and fuzz/property test coverage.
+- Accessibility, keyboard operation, high-DPI and manual end-to-end GUI tests.
+- Signed Windows installer, dependency notices, update and support policy.
+- No unresolved high-severity dependency advisories; reviewed release checklist.
+
+Temporal reconstruction and moving-overlay tracking follow measurement of real footage quality.
+They are separate restoration features, not assumed consequences of switching to Rust.
