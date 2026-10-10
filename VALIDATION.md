@@ -1,5 +1,36 @@
 # Validation record
 
+## Tagged Windows beta draft (2026-10-10)
+
+- PR #4 merged at `e5aa807`; version/preparation PR #5 merged at `0af63f4` after
+  all seven required checks passed on reviewed head `308e104` in
+  [run 38083695444](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38083695444).
+  Both merges used normal branch protection and retained the contextual commits.
+- Annotated tag `v0.1.0-beta.1` points to
+  `0af63f45fcea6519dad65cf9b833a18ec7534d72` locally and remotely.
+- [Tag workflow 38084184191](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38084184191)
+  passed source/version validation, all seven reused quality gates and draft
+  creation. GitHub confirms the release is both draft and prerelease, with the
+  Windows ZIP and `SHA256SUMS.txt` attached. Public publication has not occurred.
+- Downloaded the draft's actual `timestamp-cleaner-0.1.0-beta.1-windows-x64.zip`:
+  4,049,208 bytes; SHA-256
+  `b3a966d6ccc2e88439e1afe61afe42f65ac49d20f8e128a2402c5bf8c158e4d1`.
+  The checksum, all 270 payload hashes, 141 dependency notice sets and tagged
+  version/commit/lock metadata pass independent inspection. Static `dumpbin`
+  inspection of the tagged PE confirms `VCRUNTIME140.dll` and Windows API/UCRT/
+  OpenGL imports; the shipped guide declares the external Microsoft v14 x64 runtime.
+- The ZIP is extracted locally for owner testing, but the executable was not
+  launched during these checks. Exact-artifact native GUI/MKV/MP4 smoke evidence,
+  executable resource branding and target-specific notice review remain open.
+  Clean-machine installation/dependency recovery are explicitly unverified and
+  deferred to beta testing at the owner's request; production gates remain open.
+- Draft-only retries and expired-artifact selection have not been exercised on
+  GitHub. Initial draft creation and actual release-asset download are now verified.
+
+The draft notes contain the owner desktop checklist. Follow
+[release instructions](docs/releases.md); later executable changes require a new
+beta version/tag rather than moving this verified source tag.
+
 ## Windows ZIP automation preparation (2026-10-10)
 
 The owner reports no clean Windows VM/second PC is available and explicitly
