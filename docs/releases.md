@@ -2,9 +2,10 @@
 
 ## Available automation
 
-The Windows quality job creates a `windows-portable` Actions artifact after
+The Windows quality job creates a `windows-portable-<attempt>` Actions artifact after
 formatting, packaging tests, strict Clippy, all media tests and a release build.
-This runs for pull requests and main. Artifacts expire after 14 days; they are
+This runs for pull requests and main. Attempt suffixes allow rerunning jobs without
+replacing an earlier attempt's immutable artifact. Artifacts expire after 14 days; they are
 development previews, not public releases. GitHub wraps the already-built ZIP
 and its checksum in an artifact download; extract that outer wrapper first.
 
@@ -35,7 +36,7 @@ this change. Before tagging:
 3. Resolve executable branding/version metadata and review runtime DLL requirements.
    The runtime window icon exists; the Windows PE icon resource is still pending.
 4. On main, run `gh workflow run release.yml --ref main`; inspect all seven gates
-   and download its `windows-portable` artifact. Test on a clean Windows x64 host.
+  and download its `windows-portable-<attempt>` artifact. Test on a clean Windows x64 host.
 5. Record native GUI, MKV/MP4 playback/audio, cancellation, collision, dependency
    installation/decline/offline/manual recovery results with commit/tool/OS versions
    in VALIDATION.md. See [manual-verification.md](manual-verification.md).
