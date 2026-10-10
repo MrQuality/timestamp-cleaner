@@ -126,7 +126,7 @@ On Linux the desktop build also needs the platform development packages listed i
 See [SECURITY.md](SECURITY.md) for the threat model and [docs/architecture.md](docs/architecture.md)
 for pipeline design and limitations. The earlier Python scripts remain untouched outside this repository.
 
-## License and publication
+## License
 
 Original project code and documentation are licensed under [Apache License 2.0](LICENSE).
 The generated icon's provenance and licensing scope are recorded in [assets/README.md](assets/README.md).
