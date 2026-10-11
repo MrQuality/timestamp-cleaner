@@ -70,7 +70,8 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [ ] Complete the packaged artifact's target-specific notice review.
 - [x] Create and verify the `v0.1.0-beta.1` tag workflow and draft assets.
 - [ ] Embed executable branding/version resources and verify clean-host runtime dependencies.
-- [ ] Verify the beta package on an available Windows desktop and publish a prerelease with explicit limitations.
+- [x] Publish beta.1 as an early prerelease with explicit limitations at the owner's request.
+- [ ] Verify the exact beta package on an available Windows desktop; publication is not test evidence.
 - [ ] Validate clean-Windows installation/dependency recovery during beta testing, before production readiness.
 
 See [release instructions](docs/releases.md). ZIP delivery is the current scope;
