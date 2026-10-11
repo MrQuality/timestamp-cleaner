@@ -66,6 +66,9 @@ preserve applicable upstream notices and assess what is actually incorporated.
 
 ## Before a public binary release
 
+Public early betas now exist with explicitly disclosed incomplete checks. This checklist
+records remaining readiness work; publication does not establish that any open item passed.
+
 - [ ] Complete the clean-Windows installation and native interaction scenarios in
   [manual-verification.md](manual-verification.md), including manual setup and offline failure.
   The owner explicitly deferred clean-machine installation/dependency recovery to
@@ -79,7 +82,8 @@ preserve applicable upstream notices and assess what is actually incorporated.
 - [ ] Choose supported OS/architecture/tool versions, versioning and update policies.
   Test install, upgrade and uninstall, and define how externally installed tools are managed.
 - [ ] Embed the tracked ICO in the Windows executable/installer resources and inspect
-  Explorer, shortcut, taskbar and high-DPI appearance; only the runtime window icon is wired today.
+  Explorer, shortcut, taskbar and high-DPI appearance. Setup embeds the tracked ICO;
+  the app's PE resource and manual native appearance checks remain open.
 - [ ] Build from a reviewed tag in CI; archive provenance, checksums, dependency inventory
   and test evidence. Review signing and artifact-attestation options before claiming them.
 - [ ] Write release notes with known limitations and recovery instructions. Run clean-host

@@ -7,6 +7,8 @@ The existing project icon is copied during the build; screenshots can be added l
 `scripts/build_site.py` selects the most recently published release containing both
 the expected Windows x64 ZIP and checksum, including prereleases and excluding drafts.
 It validates asset URLs against this repository and escapes template substitutions.
+When the same release includes a setup EXE, the primary button downloads it; otherwise
+it links to the release page without advertising an unavailable installer.
 The page does not use GitHub's `/releases/latest` redirect, which excludes prereleases.
 Release metadata is resolved at deployment, so visitors do not make API requests.
 

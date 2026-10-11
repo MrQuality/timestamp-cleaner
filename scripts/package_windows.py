@@ -129,7 +129,7 @@ def main():
     commit = command("git", "rev-parse", "HEAD")
     for name in ("LICENSE", "CHANGELOG.md"):
         payload[name] = (ROOT / name).read_bytes()
-    for source, destination in (("THIRD_PARTY.md", "THIRD_PARTY.md"), ("docs/portable-windows.md", "START-HERE.md"), ("docs/media-tools.md", "docs/media-tools.md")):
+    for source, destination in (("THIRD_PARTY.md", "THIRD_PARTY.md"), ("docs/portable-windows.md", "START-HERE.md"), ("docs/media-tools.md", "docs/media-tools.md"), ("docs/windows-installer.md", "docs/windows-installer.md")):
         payload[destination] = source_document(source, commit)
     payload["timestamp-cleaner.exe"] = executable
     payload["build-info.json"] = (json.dumps({

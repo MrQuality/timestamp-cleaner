@@ -104,3 +104,13 @@ of an increment; the roadmap tracks product scope and the validation record trac
 
 The security, performance and testing requirements in SECURITY.md and docs/architecture.md remain
 part of the acceptance criteria for every relevant implementation change.
+
+## Website and Windows packaging
+
+Website content is in `site/`; preview and release-link behavior are described in
+[site/README.md](site/README.md). Packaging helpers use Python 3.10+ standard library.
+Run `python -m unittest discover -s scripts -p "test_*.py" -v` after changing them.
+Windows setup also requires NSIS 3.12; [the setup guide](docs/windows-installer.md)
+and [release process](docs/releases.md) describe compilation and ownership rules.
+Run installation tests only on a disposable GitHub Windows runner, never against an
+existing personal installation. Record hosted evidence separately from manual GUI checks.

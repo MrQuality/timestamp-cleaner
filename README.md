@@ -28,7 +28,7 @@ Video processing happens on your computer, with no uploads or telemetry.
 backend is FFmpeg rectangle interpolation. It is explicitly different from the original
 Python Telea/Navier–Stokes algorithms. See [ROADMAP.md](ROADMAP.md) for the remaining work.
 
-## Run
+## Download and run
 
 The application checks FFmpeg and FFprobe in the background at startup. Existing tools are
 detected from PATH and known Windows package-manager locations, then checked with their version
@@ -63,11 +63,18 @@ cd timestamp-cleaner
 cargo run --locked --release
 ```
 
-There are no supported downloadable installers yet. On Windows, install the Rust MSVC
-toolchain and Visual Studio Build Tools with the **Desktop development with C++** workload.
-Windows CI also produces an unsigned portable ZIP for testing; these expiring Actions
-artifacts are development previews. See [ZIP builds and beta releases](docs/releases.md)
-for downloads, packaging and the remaining public-release gates.
+For Windows downloads, visit [Releases](https://github.com/MrQuality/timestamp-cleaner/releases)
+or the [project website](https://mrquality.github.io/timestamp-cleaner/). Beta.1 is ZIP-only;
+the next beta adds a free NSIS setup EXE. Choose setup for a per-user Start shortcut and
+uninstall entry, or ZIP for a portable folder. Both are unsigned beta builds. Neither
+requires Rust or Visual Studio to run; the external Microsoft Visual C++ v14 x64 runtime
+and compatible FFmpeg/FFprobe are required. See [Windows setup, updates and removal](docs/windows-installer.md)
+and [portable instructions](docs/portable-windows.md).
+
+To compile on Windows, install the Rust MSVC toolchain and Visual Studio Build Tools
+with the **Desktop development with C++** workload. Windows CI builds both download
+formats; expiring Actions artifacts are development previews. See [builds and beta releases](docs/releases.md)
+for packaging and publication instructions. NSIS is required only to build setup EXEs.
 On Ubuntu, install the desktop build prerequisites before running Cargo:
 
 ```sh
@@ -144,6 +151,13 @@ The generated icon's provenance and licensing scope are recorded in [assets/READ
 Third-party dependencies retain their own licenses; see [THIRD_PARTY.md](THIRD_PARTY.md).
 FFmpeg is externally installed, not bundled. A bundled build needs a separate license and
 update review for its selected components.
+
+## Documentation
+
+Start with the [FAQ and troubleshooting](docs/faq.md), [media-tool recovery](docs/media-tools.md),
+[release process](docs/releases.md), and [pending manual checks](docs/manual-verification.md).
+[Architecture](docs/architecture.md), [security](SECURITY.md) and [validation evidence](VALIDATION.md)
+explain the engineering scope and its current limits.
 
 ## Join the project
 

@@ -10,3 +10,8 @@
 third-party/** -text
 # Upstream license files keep their original final blank lines as well.
 third-party/upstream/** whitespace=-blank-at-eof
+
+*.nsi text eol=lf
+*.ps1 text eol=lf
+*.html text eol=lf
+*.css text eol=lf

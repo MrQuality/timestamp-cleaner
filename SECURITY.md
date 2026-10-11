@@ -48,7 +48,7 @@ uses the actual package binaries through explicit tool-path overrides. Process-t
 is a remaining production gate; the current supervisor terminates its immediate child only.
 
 Output metadata can contain source identifying information such as creation dates and location.
-Metadata stripping is planned before a public release. Application errors may contain local paths;
+Metadata stripping remains production-readiness work; current betas can retain this information. Application errors may contain local paths;
 there is no telemetry, remote crash reporting, or persistent application log in this milestone.
 
 ## Dependency and release policy
@@ -58,6 +58,23 @@ audits dependencies for known advisories. Dependency changes require review of t
 changelog and affected behavior. Do not suppress advisories without a documented, dated risk
 assessment. Before a release, also review FFmpeg provenance, licensing, codec vulnerabilities,
 installer signing and the manually tested Windows accessibility flow.
+
+## Windows setup boundary
+
+The NSIS setup installs for the current user into a fixed versioned LocalAppData folder.
+It requests no elevation, changes no PATH values and downloads no prerequisites.
+Start shortcuts and uninstall entries are version-specific. Uninstall uses an exact
+packaged-file list and empty-directory removal; it does not recursively delete user files.
+Known packaged filenames are application-owned and will be removed even if edited.
+Same-version reinstall is refused, and setup/uninstall serialize through a versioned mutex.
+Installed files are not an OS sandbox; hostile same-user filesystem/process changes
+remain outside this threat model. Setup is not transactional and a failure may leave
+partial files. See [setup recovery](docs/windows-installer.md).
+
+CI verifies the ZIP's hashes before generating setup, compiles with pinned NSIS and no
+local compiler configuration, and tests installation on a disposable runner. Application
+and installer remain unsigned; checksums do not authenticate the publisher. Clean-host
+runtime compatibility, interactive setup and accessibility still require manual evidence.
 
 ## Reporting vulnerabilities
 
