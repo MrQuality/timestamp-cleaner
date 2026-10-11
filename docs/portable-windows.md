@@ -1,4 +1,4 @@
-# Timestamp Cleaner: Windows portable preview
+# Timestamp Cleaner: Windows beta ZIP
 
 This is an unsigned development build for Windows x64. It is not a supported
 production release. No Rust compiler or Visual Studio installation is required
@@ -32,6 +32,10 @@ stream is exported. Subtitle/data streams are omitted; rotated, HDR, alpha and
 non-square-pixel inputs are outside the supported input scope. MKV copies audio;
 MP4 copies AAC/MP3 or converts other audio to AAC. See the project's README and
 roadmap for complete restrictions.
+
+Prefer a Start shortcut and uninstall entry? Releases that include a setup EXE offer
+an alternative to this ZIP. See [Windows setup instructions](windows-installer.md).
+The setup and ZIP use the same application payload; choose either delivery format.
 
 To update, close the app and extract the new version into a separate folder.
 To remove it, close the app and delete its extracted folder. Independently

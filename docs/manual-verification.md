@@ -28,6 +28,28 @@ and audio export remains valid evidence for that smoke test only.
 Follow [manual recovery instructions](media-tools.md) when automatic setup fails.
 Publishing a development source repository does not imply these release gates pass.
 
+## Windows setup EXE
+
+Automated runner checks cover silent setup, installed payload hashes, fixed destination,
+same-version collision and relocated-uninstaller rejection, uninstall and added-file
+preservation. Record their actual hosted outcome in VALIDATION.md; implementation alone
+does not establish success. These interactive scenarios remain pending:
+
+| Scenario | Required observation | Status |
+| --- | --- | --- |
+| Normal non-admin setup | License, progress and finish pages work; Start shortcut and Apps entry are correct; no elevation requested | Pending |
+| Cancel before installing | No app files, registration or shortcut created | Pending |
+| Cancellation/failure during setup | Failure is visible; inspect partial folder and follow documented recovery; no rollback promise | Pending |
+| Two beta versions | Both launch independently; removing the old version leaves the new shortcut, registration and payload intact | Pending |
+| Running app during uninstall | Removal refuses locked files; closing the app and retrying completes cleanup | Pending |
+| Clean host, missing runtime/media tools | Official runtime/manual recovery works; app's consent flow manages FFmpeg separately | Deferred to beta testing; unverified |
+| User-added files in install folder | Exact packaged filenames removed; added files preserved; remaining folder is explained | Pending interactive check; runner sentinel test also applies |
+| Keyboard/high-DPI/reputation prompts | Setup is readable/reachable and unsigned status is disclosed without disabling security | Pending |
+
+Use the actual release setup EXE and record its SHA-256, version, source commit and OS.
+See [setup/update/removal instructions](windows-installer.md). Runner test environments
+already contain developer runtimes/tools and do not count as clean-host evidence.
+
 ## Native-dialog upgrade: PR #2
 
 The rfd 0.17.2 update changes Linux portal internals and the Windows native bindings.

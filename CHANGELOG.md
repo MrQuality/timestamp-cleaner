@@ -1,15 +1,24 @@
 # Changelog
 
-No public release has been made. The Cargo package version identifies the current
-development project; it does not imply a supported or production-ready release.
+Public beta releases are available. They are development builds and do not imply
+a supported or production-ready release. See [release instructions](docs/releases.md).
 
 ## Unreleased
 
+## 0.1.0-beta.2
+
+- Free per-user NSIS setup EXE alongside the portable ZIP, with versioned Start
+  shortcuts/uninstall entries, side-by-side updates and preservation of user-added files.
+- Verified ZIP-to-installer packaging, NSIS notices/provenance and automated Windows
+  install/payload/collision/uninstall checks; setup links on the project website.
+- Corrected download, release-state and metadata-privacy documentation; setup/update/removal
+  instructions, FAQ and explicit remaining manual validation.
+
 ## 0.1.0-beta.1 — draft candidate
 
-This version prepares the first Windows x64 portable ZIP for verification. Its
-tag creates a draft prerelease; public binary publication remains pending the
-artifact-specific checks in [docs/releases.md](docs/releases.md).
+Published as the first Windows x64 portable ZIP beta at the owner's request.
+Exact-package desktop testing, clean-host recovery, executable branding and
+artifact-specific notice review remained outstanding and were disclosed in its release notes.
 
 ### Added
 

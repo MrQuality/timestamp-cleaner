@@ -1,94 +1,97 @@
-# Windows ZIP builds and first beta
+# Windows downloads, builds and beta releases
 
-## Available automation
+Official downloads are in [Releases](https://github.com/MrQuality/timestamp-cleaner/releases)
+and linked from the [website](https://mrquality.github.io/timestamp-cleaner/).
+Public beta.1 was published on 2026-10-10 as ZIP-only, with outstanding checks disclosed.
+Beta.2 adds a free NSIS setup EXE. Builds remain unsigned development releases,
+not a production-readiness claim. No paid installer tool or service is required.
 
-The Windows quality job creates a `windows-portable-<attempt>` Actions artifact after
-formatting, packaging tests, strict Clippy, all media tests and a release build.
-This runs for pull requests and main. Attempt suffixes allow rerunning jobs without
-replacing an earlier attempt's immutable artifact. Artifacts expire after 14 days; they are
-development previews, not public releases. GitHub wraps the already-built ZIP
-and its checksum in an artifact download; extract that outer wrapper first.
+## Download choices
 
-The **Windows portable release** workflow has two entry points:
+| Format | Use | Update/remove |
+| --- | --- | --- |
+| Portable ZIP | Extract the entire ZIP and run the app; keep notices together | Extract updates separately; delete the old folder when ready |
+| NSIS setup EXE | Per-user, fixed versioned folder; Start shortcut and uninstall entry | Install new versions alongside old ones; remove through Settings > Apps |
 
-- Run manually from `main` to rebuild all seven quality gates and produce an
-  artifact. It does not create a tag or a release.
-- Push a tag such as `v0.1.0-beta.1`, exactly matching Cargo's package version,
-  to rerun the same quality workflow and create a **draft prerelease** with the
-  ZIP and checksum attached. The tagged commit must already be part of main.
+See [portable instructions](portable-windows.md) and [setup/recovery](windows-installer.md).
+Both use the same verified application payload. FFmpeg/FFprobe and Microsoft's Visual C++
+v14 x64 runtime are external. Setup downloads no prerequisites and requests no elevation.
+MSI, signing, automatic updates and Linux binary packages remain deferred.
 
-Only the draft job has repository write permission. It resolves the newest unexpired
-Windows package artifact ID within its own workflow run, verifies its checksum and
-never executes the binary. Resolution uses read-only Actions access; partial retries
-can reuse a successful producer's earlier-attempt artifact without guessing its name.
-Actions are pinned by full revision; checkout does not retain Git credentials.
-Existing releases/assets are not overwritten. A rerun with an existing draft
-will fail at creation; inspect the existing draft rather than silently replacing it.
+Download `SHA256SUMS.txt` from the same release and compare the chosen file with:
 
-## Published beta.1
+```powershell
+Get-FileHash .\<downloaded-file> -Algorithm SHA256
+```
 
-On 2026-10-10, the owner requested public beta availability. The verified existing
-ZIP and checksum were published as [v0.1.0-beta.1](https://github.com/MrQuality/timestamp-cleaner/releases/tag/v0.1.0-beta.1),
-retaining prerelease status and without marking it latest. The tag and assets were unchanged.
-This owner-directed early beta publication precedes completion of the checklist below;
-it does not establish production readiness. Exact-package desktop testing, clean-machine
-recovery, executable branding and artifact-specific notice review remain outstanding
-and are disclosed in the public release notes.
+The checksum file covers both formats when present. Checksums detect changed bytes;
+they do not authenticate the publisher. Use the official repository and keep originals.
 
-## Beta.1 preparation checklist and outstanding work
+## CI previews
 
-The package declares `0.1.0-beta.1` to prepare a draft candidate. Creating its tag
-does not establish that the public binary release gates have passed.
+The Windows quality job runs formatting, Python packaging/policy tests, strict Clippy,
+Rust/media tests and a release build. It packages the ZIP, installs pinned NSIS 3.12.0,
+builds setup from that ZIP, then tests silent setup, payload hashes, destination/collision
+guards, relocated-uninstaller refusal, uninstall and added-file preservation.
 
-1. Merge the small version/lockfile/inventory/changelog PR after CI passes.
-2. Create an annotated `v0.1.0-beta.1` tag on that merged main commit and push it.
-   Inspect the tag workflow's source validation, seven quality gates and draft job.
-3. Download the draft's **actual attached ZIP** and checksum. Confirm its build-info
-   commit and checksum. Earlier preview evidence does not prove this build passed.
-4. Before public distribution, review the exact Windows dependency notices,
-   including embedded fonts and supplemental upstream attributions. Packaging
-   copies available declarations and fails on missing/changed notices; it does
-   not establish licensing clearance.
-5. Resolve executable branding/version metadata and review runtime DLL requirements.
-   The runtime window icon exists; the Windows PE icon resource is still pending.
-6. Test the actual package on the available Windows x64 desktop. Record native
-   GUI, MKV/MP4 playback/audio, cancellation and collision results with commit/
-   tool/OS versions in VALIDATION.md. The owner has no clean Windows host and
-   explicitly deferred clean-machine installation/dependency recovery verification
-   to beta testing. Label those scenarios unverified in the beta release notes;
-   they remain production-readiness gates. See [manual-verification.md](manual-verification.md).
-7. Keep the release in draft until its selected
-   [binary-release gates](open-source-readiness.md#before-a-public-binary-release)
-   pass. Replace candidate notes with verified scope and known limitations before
-   publishing it as a prerelease. Do not mark it a stable/latest release.
+The `windows-portable-<attempt>` Actions artifact contains ZIP, setup EXE and checksums.
+The historical artifact name is retained for compatibility. These previews expire after
+14 days; they are not public releases. Extract GitHub's outer artifact wrapper first.
+Attempt suffixes preserve earlier immutable artifacts when jobs are rerun.
+Linux checks packaging logic but does not execute the Windows installer.
 
-Never move a release tag to incorporate later fixes. If branding, runtime or other
-changes are needed after tagging beta.1, prepare beta.2 through another reviewed
-version PR and tag, then repeat verification on that package. A draft may remain
-unpublished; preserve the source/build evidence rather than silently replacing it.
+## Prepare and publish a beta
 
-No installer, signing certificate or paid packaging service is required for the
-ZIP pipeline. Builds are unsigned and that status must remain visible. Signing,
-installers, Linux binary distribution and automatic updates are deferred.
-Prerelease versions may change behavior; no backwards compatibility is promised.
-Updates are manual, by extracting the new version into a separate directory.
+1. Prepare a small version PR. Cargo's package version, lockfile and dependency inventory
+   fingerprint must agree. Document changes, known limits and actual validation.
+2. Review and merge through protected main with all seven required checks passing.
+3. Create an annotated tag, for example `v0.1.0-beta.2`, on merged main and push it.
+   Never move a published tag or silently replace verified packages.
+4. Inspect **Windows release packages**. It validates tag/version and main ancestry,
+   reuses the full quality workflow, then creates a draft prerelease with both packages.
+   A manual main dispatch builds previews only; it creates no tag or release.
+5. Download actual draft assets. Verify both checksums and the ZIP's version/commit/lock
+   metadata. Setup's additional build metadata records the exact source ZIP hash,
+   installer source commit and NSIS version/notice hash. Build-runner smoke results
+   must pass; an earlier preview does not establish this tagged package's results.
+6. Review the selected artifact's dependency/font notices, setup runtime and branding.
+   Run interactive app/setup smoke tests and record date, version/commit, OS/tool
+   versions and results in VALIDATION.md. Do not substitute compile success for them.
+7. Replace generated candidate notes with verified scope and explicit remaining limits.
+   Publish an authorized early beta as a prerelease, not stable/latest. The owner
+   deferred clean-host installation/recovery testing to beta; keep it unverified until
+   evidence exists. Any other incomplete release-readiness item must remain disclosed.
+
+Public beta.1 preceded completion of desktop, branding and artifact-notice review;
+publication did not close those gates. See [readiness](open-source-readiness.md),
+[manual checklist](manual-verification.md) and [roadmap](../ROADMAP.md).
+
+Only the draft job has repository write access. It resolves the newest unexpired
+Windows artifact from its own run, verifies all listed checksums, and does not execute
+downloaded application files. Partial retries can reuse a successful producer's earlier
+attempt. Existing release/assets are never overwritten; an existing draft causes creation
+to fail safely. Inspect it instead of retrying blindly. Actions use immutable revisions
+and checkout does not retain credentials. Later fixes require a new version and tag.
 
 ## Local packaging
 
-With Python 3.10+, Cargo and the Windows MSVC toolchain:
+Python 3.10+, Cargo/Rust MSVC prerequisites and NSIS 3.12 are required on Windows:
 
 ```powershell
 cargo build --locked --release --target x86_64-pc-windows-msvc
 python -m unittest discover -s scripts -p "test_*.py" -v
 python scripts/package_windows.py
+python scripts/package_installer.py dist/timestamp-cleaner-<version>-windows-x64.zip --compiler 'C:\Program Files (x86)\NSIS\makensis.exe'
 ```
 
-The output is under ignored `dist/`; choose `--output <empty-directory>` for another
-build. The ZIP includes the executable, instructions, app license, third-party
-notice files, target dependency CSV, compiler/commit/lock metadata and file hashes.
-Normal/build dependencies are included conservatively, even when build tooling
-does not ship in the executable. Development-only and other-target packages are
-excluded. FFmpeg binaries, personal media, credentials and local tool caches are
-not included. The container is deterministic for identical payload bytes; this
-does not claim independently reproducible Rust binaries. Always rebuild before
-packaging; the script cannot prove an arbitrary `--binary` came from the current tree.
+Use an empty ignored output directory. The ZIP includes app license/changelog, verified
+normal/build dependency notices, target inventory, compiler/commit/lock metadata and file
+hashes. Development-only/other-target packages, FFmpeg, private media, secrets and caches
+are excluded. Its container is deterministic for identical payload bytes; this does not
+claim independently reproducible Rust or NSIS binaries. Rebuild before packaging; the
+ZIP script cannot prove an arbitrary binary was compiled from the current tree.
+
+NSIS compilation uses no local configuration and treats warnings as errors. A completed
+setup is copied without replacing an existing EXE and its hash is appended to the shared
+checksum file. A failed build may need a fresh output directory; never edit an existing
+release's files as recovery. Run installation tests only on disposable Windows runners.

@@ -20,8 +20,9 @@ not mean a task has been validated as suitable for a new contributor.
 
 Merge commits are enabled; squash and rebase merges are disabled to preserve the small
 commits and contextual message bodies requested by the maintainer. Auto-merge and branch
-updates are enabled, and merged topic branches are deleted automatically. There are no
-downloadable releases or published installers yet.
+updates are enabled, and merged topic branches are deleted automatically. Public beta
+downloads are now available through Releases; current assets and limitations are recorded
+in [release instructions](releases.md).
 
 ## Main branch protection
 
@@ -67,3 +68,11 @@ gh run list --repo MrQuality/timestamp-cleaner --workflow ci.yml
 
 Hosted CI evidence is recorded in [publication-audit.md](publication-audit.md). Binary
 distribution and manual GUI/installation gates remain in [the readiness checklist](open-source-readiness.md).
+
+## Project website
+
+GitHub Pages was enabled on 2026-10-11 with Actions as its build source and HTTPS enforced.
+The homepage is https://mrquality.github.io/timestamp-cleaner/. Deployment environment
+rules permit main and version tags; release-triggered builds explicitly check out main
+for reviewed website source. PR builds do not deploy, and deployment alone has Pages
+write/OIDC permissions. Future published/edited releases refresh versioned downloads.

@@ -92,3 +92,14 @@ code or other external material is imported, verify ownership and retain require
 notices. Add a NOTICE file when applicable attribution requirements call for one;
 do not invent upstream attribution or treat a project NOTICE as a substitute for
 third-party license texts.
+
+## Windows setup executable
+
+NSIS 3.12 supplies the setup/uninstall runtime. The script uses its zlib compressor
+and standard UI/System components. Setup includes the compiler distribution's unmodified
+COPYING file as `installer/NSIS-COPYING.txt`, plus compiler version and notice hash in
+`installer/build-info.json`. This is separate from the Cargo dependency inventory.
+NSIS is free software; see its [license documentation](https://nsis.sourceforge.io/Docs/AppendixI.html)
+and [source distribution](https://sourceforge.net/projects/nsis/files/NSIS%203/3.12/).
+The original application license remains Apache-2.0; upstream components retain their
+own terms. Automated notice copying does not replace artifact-specific review.

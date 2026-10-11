@@ -63,7 +63,8 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] Configure the real GitHub repository, private reporting and branch/security settings.
 - [x] Verify clean-checkout build/test instructions locally; enforce additional publication checks in CI.
 - [x] Enforce Windows/Linux CI on GitHub, inspect initial results and require passing checks before merge.
-- [ ] Embed the Windows executable/installer icon resource and inspect native appearance.
+- [x] Embed the tracked icon in the NSIS setup and generated uninstaller.
+- [ ] Embed the Windows application executable icon resource and inspect native appearance.
 
 ## First Windows portable beta
 
@@ -77,8 +78,17 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [ ] Verify the exact beta package on an available Windows desktop; publication is not test evidence.
 - [ ] Validate clean-Windows installation/dependency recovery during beta testing, before production readiness.
 
-See [release instructions](docs/releases.md). ZIP delivery is the current scope;
-MSI/installers, code signing and Linux packages are deferred.
+## Free Windows setup EXE
+
+- [x] NSIS per-user setup from the verified ZIP, with version-specific install and uninstall entries.
+- [x] Preserve added files on uninstall; reject same-version collisions and arbitrary destination paths.
+- [x] Add setup build, payload/collision/uninstall tests and release assets to Windows CI.
+- [x] Document prerequisites, side-by-side updates, uninstall and partial-install recovery.
+- [ ] Observe the Windows runner's actual install/uninstall results and verify downloadable setup.
+- [ ] Manually verify interactive setup, accessibility, clean-host startup and cross-version use.
+
+See [release instructions](docs/releases.md). ZIP and free NSIS setup EXE are the current scope;
+MSI, code signing, automatic updates and Linux packages are deferred.
 
 Follow [the publication checklist](docs/open-source-readiness.md) for evidence and the
 distinction between publishing development source and distributing production binaries.
