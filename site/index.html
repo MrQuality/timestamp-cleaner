@@ -21,8 +21,8 @@
       <p class="eyebrow">PERSONAL VIDEOS. A CLEARER VIEW.</p>
       <h1 id="headline">Keep the memories.<br><span>Clean up the timestamp.</span></h1>
       <p class="lead">Give your family trip videos room to breathe. Select a burned-in camera timestamp, preview the repair, and export one chosen result with audio.</p>
-      <div class="actions"><a class="button" href="{{DOWNLOAD_URL}}">Download Windows x64 ZIP ↓</a><a class="secondary" href="{{RELEASE_URL}}">Release notes ↗</a></div>
-      <p class="muted">{{VERSION}} · {{STATUS}} · Portable ZIP · Unsigned executable</p>
+      <div class="actions"><a class="button" href="{{INSTALLER_URL}}">{{INSTALLER_LABEL}}</a><a class="secondary" href="{{DOWNLOAD_URL}}">Download portable ZIP ↓</a><a class="secondary" href="{{RELEASE_URL}}">Release notes ↗</a></div>
+      <p class="muted">{{VERSION}} · {{STATUS}} · Windows x64 · Unsigned builds</p>
       <ul class="facts" aria-label="Project highlights"><li>Processed on your computer</li><li>No uploads or telemetry</li><li>Apache 2.0 open source</li></ul>
     </section>
     <section class="story" aria-labelledby="story-title">
@@ -42,10 +42,10 @@
     <section id="start" class="setup" aria-labelledby="setup-title">
       <div><p class="eyebrow">START HERE</p><h2 id="setup-title">Your first clean-up.</h2><p>Windows x64 binary available today. You do not need Rust or Visual Studio to run it.</p><p><a href="https://github.com/MrQuality/timestamp-cleaner/releases">All releases, including betas ↗</a><br><a href="{{CHECKSUM_URL}}">Download SHA256SUMS.txt ↗</a></p></div>
       <ol>
-        <li><strong>Download and extract the entire ZIP.</strong> Read the included <code>START-HERE.md</code>. Keep the extracted files together.</li>
-        <li><strong>Check the download.</strong> Compare <code>Get-FileHash .\timestamp-cleaner-*.zip -Algorithm SHA256</code> in PowerShell against <code>SHA256SUMS.txt</code>.</li>
+        <li><strong>Choose setup EXE or portable ZIP.</strong> Setup installs for your user and adds a versioned Start shortcut and uninstall entry. For a ZIP, extract the entire archive and keep its files together. Older releases may offer only a ZIP.</li>
+        <li><strong>Check the download before running it.</strong> Compare <code>Get-FileHash .\&lt;downloaded-file&gt; -Algorithm SHA256</code> in PowerShell against <code>SHA256SUMS.txt</code>. Read the included <code>START-HERE.md</code> and the <a href="https://github.com/MrQuality/timestamp-cleaner/blob/main/docs/windows-installer.md">setup guide</a>.</li>
         <li><strong>Install the Microsoft runtime if missing.</strong> Use the official <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/">Visual C++ v14 Redistributable (x64)</a>.</li>
-        <li><strong>Launch <code>timestamp-cleaner.exe</code>.</strong> The app detects FFmpeg and FFprobe. If missing, it offers installation through WinGet with your consent. If setup fails, follow the <a href="https://github.com/MrQuality/timestamp-cleaner/blob/main/docs/media-tools.md">manual setup guide</a>.</li>
+        <li><strong>Launch from Start or the extracted folder.</strong> The app detects FFmpeg and FFprobe. If missing, it offers installation through WinGet with your consent. If setup fails, follow the <a href="https://github.com/MrQuality/timestamp-cleaner/blob/main/docs/media-tools.md">manual media-tool guide</a>.</li>
         <li><strong>Try a short video.</strong> Select the timestamp, render a preview, choose MKV or MP4, and export. Play the result to check picture and audio.</li>
       </ol>
     </section>

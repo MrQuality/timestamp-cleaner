@@ -34,6 +34,13 @@ def release_values(releases):
             raise ValueError("Release asset URL does not match this repository and tag")
         values.update(VERSION=version, RELEASE_URL=f"{REPO}/releases/tag/{tag}",
                       STATUS="Early beta" if release["prerelease"] else "Release")
+        installer_name = f"timestamp-cleaner-{version}-windows-x64-setup.exe"
+        values.update(INSTALLER_URL=values["RELEASE_URL"], INSTALLER_LABEL="View available downloads")
+        if installer_name in assets:
+            installer_url = f"{REPO}/releases/download/{tag}/{installer_name}"
+            if assets[installer_name]["browser_download_url"] != installer_url:
+                raise ValueError("Installer URL does not match this repository and tag")
+            values.update(INSTALLER_URL=installer_url, INSTALLER_LABEL="Download Windows setup EXE ↓")
         candidates.append((release["published_at"], values))
     if not candidates:
         raise ValueError("No published Windows ZIP with checksum found")

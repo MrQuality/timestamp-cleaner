@@ -1,4 +1,4 @@
-name: Windows portable release
+name: Windows release packages
 on:
   workflow_dispatch:
   push:
@@ -46,7 +46,7 @@ jobs:
         with:
           artifact-ids: ${{ steps.package.outputs.id }}
           path: dist
-      - name: Verify downloaded ZIP checksum
+      - name: Verify downloaded package checksums
         working-directory: dist
         run: sha256sum --check --strict SHA256SUMS.txt
       - name: Prepare draft prerelease
@@ -56,15 +56,22 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           cat > release-notes.md <<'EOF'
-          Windows x64 portable beta candidate. This draft is not ready for publication.
+          Windows x64 beta candidate: portable ZIP and free NSIS setup EXE.
+          This draft is not a production-ready release.
 
-          Download the ZIP and SHA256SUMS.txt together, verify the checksum and extract
-          the entire ZIP. START-HERE.md contains setup and recovery instructions.
+          Download either package and SHA256SUMS.txt, then verify its checksum.
+          Extract the entire ZIP, or run the setup EXE for a per-user installation.
+          Setup needs no administrator prompt and downloads no prerequisites.
+          Versions install side by side; remove older versions through Settings > Apps.
+          START-HERE.md and installer/SETUP.md contain setup and recovery instructions.
           FFmpeg/FFprobe are external and may be installed with consent through WinGet.
           The Microsoft Visual C++ v14 Redistributable (x64) is also required;
           see START-HERE.md for Microsoft's official runtime setup instructions.
 
-          The executable is unsigned. The repair uses FFmpeg rectangle interpolation;
+          Both application and setup are unsigned. Automated silent installation,
+          payload, collision and uninstall checks run on the Windows build runner.
+          They do not establish interactive setup or clean-host runtime compatibility.
+          The repair uses FFmpeg rectangle interpolation;
           this is not the original Python Telea/Navier-Stokes implementation.
 
           Clean-machine Windows installation and dependency recovery are unverified.
@@ -76,6 +83,6 @@ jobs:
           exact artifact, and replace these candidate notes with
           dated results and known limitations. See docs/releases.md in the source repo.
           EOF
-          gh release create "$RELEASE_TAG" dist/*.zip dist/SHA256SUMS.txt \
+          gh release create "$RELEASE_TAG" dist/*.zip dist/*-setup.exe dist/SHA256SUMS.txt \
             --verify-tag --draft --prerelease --title "Timestamp Cleaner $RELEASE_TAG" \
             --notes-file release-notes.md

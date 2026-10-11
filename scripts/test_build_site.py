@@ -44,6 +44,17 @@ class SiteTests(unittest.TestCase):
             with self.subTest(releases=releases), self.assertRaises(ValueError):
                 release_values(releases)
 
+    def test_setup_link_is_optional_and_validated_in_same_release(self):
+        values = release_values([self.beta])
+        self.assertEqual(values["INSTALLER_URL"], values["RELEASE_URL"])
+        name = "timestamp-cleaner-0.1.0-beta.1-windows-x64-setup.exe"
+        url = f"{REPO}/releases/download/v0.1.0-beta.1/{name}"
+        self.beta["assets"].append(dict(name=name, browser_download_url=url))
+        self.assertEqual(release_values([self.beta])["INSTALLER_URL"], url)
+        self.beta["assets"][-1]["browser_download_url"] = "https://example.com/setup.exe"
+        with self.assertRaisesRegex(ValueError, "Installer URL"):
+            release_values([self.beta])
+
     def test_build_has_resolved_downloads_and_only_expected_files(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
