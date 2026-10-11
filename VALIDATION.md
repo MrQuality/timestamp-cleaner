@@ -247,3 +247,29 @@ match the previously inspected draft. The tag, executable and ZIP were unchanged
 Release notes disclose pending desktop/clean-machine testing, branding and
 artifact-specific notice review. Publication itself supplies no additional runtime
 or license-review evidence.
+
+## Basic GitHub Pages website
+
+On 2026-10-11, PR #8 merged at `276c29d284bd557b659f25ff114b013e6fbf571f`
+after all seven required quality jobs and the website build passed. The two
+implementation commits separate page content from release-aware deployment.
+
+- All 12 Python tests passed locally, including five site tests. Removing draft
+  exclusion caused the focused suite to fail; the mutation was restored.
+- Actionlint and whitespace checks passed. Local HTTP assets and fragment links passed.
+- Five-axis review covered content correctness, readability, minimal static architecture,
+  escaped/validated release metadata, deployment permissions and absence of browser dependencies.
+- Pages build/deploy run [38110370370](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38110370370)
+  succeeded. The public page, stylesheet and icon returned HTTPS 200, and rendered
+  HTML contains the expected beta.1 ZIP URL/version with no unresolved tokens.
+- ZIP, checksum and release-note URLs returned HTTP 200. Three GitHub document
+  HEAD requests returned transient 503 responses; API checks confirmed all files exist.
+- GitHub Pages uses Actions, HTTPS and main/version-tag environment deployment rules.
+  The repository homepage points to https://mrquality.github.io/timestamp-cleaner/.
+- Browser automation reported no available browser; visual, mobile and interactive
+  keyboard QA remain unverified. Screenshots and an approved comparison example are future work.
+
+The page uses no browser JavaScript, remote fonts or analytics. Builds resolve the
+newest published Windows ZIP with its checksum, including prereleases and excluding
+drafts. Future published/edited releases refresh the site; manual main dispatch
+handles deletion/removal scenarios. No executable or release asset was changed.
