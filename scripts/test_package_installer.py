@@ -50,7 +50,7 @@ class InstallerTests(unittest.TestCase):
                     checked_payload(archive)
 
     def test_traversal_case_collision_reserved_name_and_nsis_injection_are_rejected(self):
-        for name in ("../outside", "licenses/../outside", "license", "CON.txt", 'bad$INSTDIR', 'bad"name'):
+        for name in ("../outside", "licenses/../outside", "license", "CON.txt", 'bad$INSTDIR', 'bad"name', "uninstall.exe", "installer"):
             with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
                 archive = self.package(Path(directory))
                 with zipfile.ZipFile(archive, "a") as target:

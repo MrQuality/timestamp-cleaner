@@ -32,6 +32,7 @@ def checked_payload(archive):
                     or any(not p or p in (".", "..") or p.endswith((".", " "))
                            or p.split(".")[0].upper() in reserved
                            for p in parts)
+                    or parts[1].casefold() == "installer" or name.casefold() == "uninstall.exe"
                     or name.casefold() in seen):
                 raise ValueError("Unsafe or duplicate Windows payload path")
             seen.add(name.casefold())
@@ -85,8 +86,6 @@ def build(archive, compiler, output):
     compiler_version = subprocess.check_output([str(compiler), "/VERSION"], text=True).strip()
     if compiler_version != "v3.12":
         raise ValueError("NSIS 3.12 is required")
-    if any(name.casefold().startswith("installer/") for name in payload):
-        raise ValueError("Portable ZIP uses reserved installer namespace")
     payload["installer/NSIS-COPYING.txt"] = (compiler.parent / "COPYING").read_bytes()
     installer_commit = command("git", "rev-parse", "HEAD")
     payload["installer/SETUP.md"] = source_document("docs/windows-installer.md", installer_commit)

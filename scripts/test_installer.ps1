@@ -12,8 +12,11 @@ if ((Test-Path -LiteralPath $installPath) -or (Test-Path -LiteralPath $registryP
     throw 'Test refuses to modify a pre-existing installation, registry entry or shortcut'
 }
 $installerPath = (Resolve-Path -LiteralPath $Installer).Path
-$process = Start-Process -FilePath $installerPath -ArgumentList '/S' -PassThru -Wait -WindowStyle Hidden
+$alternate = Join-Path $env:RUNNER_TEMP "timestamp-cleaner-destination-probe-$Version"
+if (Test-Path -LiteralPath $alternate) { throw 'Alternate-path probe already exists' }
+$process = Start-Process -FilePath $installerPath -ArgumentList '/S', "/D=$alternate" -PassThru -Wait -WindowStyle Hidden
 if ($process.ExitCode -ne 0) { throw "Silent setup failed: $($process.ExitCode)" }
+if (Test-Path -LiteralPath $alternate) { throw 'Setup accepted an arbitrary destination' }
 $manifest = Get-Content -LiteralPath (Join-Path $installPath 'file-manifest.json') -Raw | ConvertFrom-Json
 foreach ($property in $manifest.PSObject.Properties) {
     $filePath = Join-Path $installPath $property.Name
@@ -35,6 +38,14 @@ Set-Content -LiteralPath $nestedSentinel -Value 'preserve nested user files'
 $collision = Start-Process -FilePath $installerPath -ArgumentList '/S' -PassThru -Wait -WindowStyle Hidden
 if ($collision.ExitCode -eq 0) { throw 'Same-version collision was accepted' }
 $uninstaller = Join-Path $installPath 'uninstall.exe'
+$relocated = Join-Path $env:RUNNER_TEMP "timestamp-cleaner-relocated-$Version.exe"
+if (Test-Path -LiteralPath $relocated) { throw 'Relocated-uninstaller probe already exists' }
+Copy-Item -LiteralPath $uninstaller -Destination $relocated
+# _? disables NSIS's temporary-copy bootstrap so the rejection exit code is observable.
+$relocation = Start-Process -FilePath $relocated -ArgumentList '/S', "_?=$env:RUNNER_TEMP" -PassThru -Wait -WindowStyle Hidden
+if ($relocation.ExitCode -eq 0 -or -not (Test-Path -LiteralPath $registryPath) -or
+    -not (Test-Path -LiteralPath (Join-Path $installPath 'timestamp-cleaner.exe'))) { throw 'Relocated uninstaller was accepted' }
+Remove-Item -LiteralPath $relocated
 Start-Process -FilePath $uninstaller -ArgumentList '/S' -Wait -WindowStyle Hidden
 $deadline = (Get-Date).AddSeconds(30)
 while ((Test-Path -LiteralPath $uninstaller) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 200 }
