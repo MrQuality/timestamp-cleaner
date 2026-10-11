@@ -96,6 +96,8 @@ Accepted requirements and delivery order are in [the feature design](docs/report
 These features are not present in beta.2.
 
 - [x] Confirm reviewed GitHub reports and automatic checks with approval before installation.
+- [x] Document proposed update trust, publication, client state and installation architecture.
+- [ ] Validate the TUF client/publisher compatibility and operational feasibility spike.
 - [ ] Add report preview, allowlisted diagnostics, Copy/Save and explicit GitHub handoff.
 - [ ] Test report privacy, failure/cancellation paths, offline use and oversized handoff.
 - [ ] Add persistent preferences and non-blocking release checks with beta/stable selection.

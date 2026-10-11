@@ -85,6 +85,13 @@ recovery; commit only public verification keys. No direct installer execution is
 enabled until this trust path and its negative tests pass. Until then an update
 notification may open the official release page for manual download.
 
+The proposed [update architecture](auto-update-architecture.md) uses standard TUF
+Ed25519 metadata to authenticate the release catalog, with a separate
+[publication/key runbook](auto-update-operations.md). This refines the signed-manifest
+requirement without inventing a signature protocol. See the existing
+[side-by-side NSIS contract](windows-installer.md). The architecture remains subject
+to the documented compatibility and operational spike; no updater is implemented yet.
+
 Acceptance tests must cover beta.9 versus beta.10, stable promotion, channel changes,
 draft exclusion, same/older versions, missing assets, malformed metadata, rate limits,
 timeouts, opt-out persistence, concurrent checks and export-in-progress deferral.

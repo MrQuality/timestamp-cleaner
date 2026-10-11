@@ -1,5 +1,9 @@
 # Architecture
 
+The proposed [application update architecture](auto-update-architecture.md) and
+[publication/key operations](auto-update-operations.md) are design documents;
+current beta.2 has no updater.
+
 ## Processing
 
 The UI owns presentation state and a single job handle. Workers receive immutable request
