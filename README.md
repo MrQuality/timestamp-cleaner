@@ -10,6 +10,9 @@ It started as a Python script; this Rust application adds a native interface to 
 timestamp area, compare a repair preview and export one chosen result with audio.
 Video processing happens on your computer, with no uploads or telemetry.
 
+**[Project website and download instructions](https://mrquality.github.io/timestamp-cleaner/)**
+· [Windows beta releases](https://github.com/MrQuality/timestamp-cleaner/releases)
+
 [![Rust quality gates](https://github.com/MrQuality/timestamp-cleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/MrQuality/timestamp-cleaner/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
