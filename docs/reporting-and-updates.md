@@ -14,7 +14,8 @@ Build a versioned, bounded report from an explicit allowlist: application versio
 build/source identifier when available, OS/architecture, operation identifier, error
 category and detected tool versions. Never collect videos, previews, filenames,
 paths, command lines, media metadata, environment variables, account identifiers
-or credentials. Arbitrary subprocess stderr is not safe diagnostic data: categorise
+or credentials. Operation identifiers and error categories must be closed Rust enums,
+not free-form strings. Arbitrary subprocess stderr is not safe diagnostic data: categorize
 it locally rather than automatically including its text. Do not claim regex-based
 redaction can make arbitrary logs safe.
 
