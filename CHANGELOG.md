@@ -5,6 +5,8 @@ a supported or production-ready release. See [release instructions](docs/release
 
 ## Unreleased
 
+## 0.1.0-beta.2
+
 - Free per-user NSIS setup EXE alongside the portable ZIP, with versioned Start
   shortcuts/uninstall entries, side-by-side updates and preservation of user-added files.
 - Verified ZIP-to-installer packaging, NSIS notices/provenance and automated Windows

@@ -65,7 +65,7 @@ cargo run --locked --release
 
 For Windows downloads, visit [Releases](https://github.com/MrQuality/timestamp-cleaner/releases)
 or the [project website](https://mrquality.github.io/timestamp-cleaner/). Beta.1 is ZIP-only;
-the next beta adds a free NSIS setup EXE. Choose setup for a per-user Start shortcut and
+beta.2 adds a free NSIS setup EXE. Choose setup for a per-user Start shortcut and
 uninstall entry, or ZIP for a portable folder. Both are unsigned beta builds. Neither
 requires Rust or Visual Studio to run; the external Microsoft Visual C++ v14 x64 runtime
 and compatible FFmpeg/FFprobe are required. See [Windows setup, updates and removal](docs/windows-installer.md)

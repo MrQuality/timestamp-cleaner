@@ -1,13 +1,13 @@
 [package]
 name = "timestamp-cleaner"
-version = "0.1.0-beta.1"
+version = "0.1.0-beta.2"
 edition = "2024"
 rust-version = "1.92"
 description = "Local desktop restoration of camera timestamp overlays"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/MrQuality/timestamp-cleaner"
-homepage = "https://github.com/MrQuality/timestamp-cleaner"
+homepage = "https://mrquality.github.io/timestamp-cleaner/"
 publish = false
 
 [features]

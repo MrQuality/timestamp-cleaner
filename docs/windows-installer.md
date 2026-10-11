@@ -3,7 +3,7 @@
 The free NSIS build produces `timestamp-cleaner-<version>-windows-x64-setup.exe`.
 It is a conventional Windows setup EXE, not an MSI. The portable ZIP remains available.
 Download official builds from [Releases](https://github.com/MrQuality/timestamp-cleaner/releases).
-Beta.1 contains only a ZIP; installer availability starts with the next release.
+Beta.1 contains only a ZIP; setup EXE packaging starts with beta.2.
 
 ## Install and launch
 

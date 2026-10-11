@@ -3,7 +3,7 @@
 Official downloads are in [Releases](https://github.com/MrQuality/timestamp-cleaner/releases)
 and linked from the [website](https://mrquality.github.io/timestamp-cleaner/).
 Public beta.1 was published on 2026-10-10 as ZIP-only, with outstanding checks disclosed.
-The next beta adds a free NSIS setup EXE. Builds remain unsigned development releases,
+Beta.2 adds a free NSIS setup EXE. Builds remain unsigned development releases,
 not a production-readiness claim. No paid installer tool or service is required.
 
 ## Download choices
