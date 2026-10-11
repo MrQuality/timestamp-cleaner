@@ -88,7 +88,21 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [ ] Manually verify interactive setup, accessibility, clean-host startup and cross-version use.
 
 See [release instructions](docs/releases.md). ZIP and free NSIS setup EXE are the current scope;
-MSI, code signing, automatic updates and Linux packages are deferred.
+MSI, Windows code signing and Linux packages are deferred.
+
+## User feedback: reporting and updates
+
+Accepted requirements and delivery order are in [the feature design](docs/reporting-and-updates.md).
+These features are not present in beta.2.
+
+- [x] Confirm reviewed GitHub reports and automatic checks with approval before installation.
+- [ ] Add report preview, allowlisted diagnostics, Copy/Save and explicit GitHub handoff.
+- [ ] Test report privacy, failure/cancellation paths, offline use and oversized handoff.
+- [ ] Add persistent preferences and non-blocking release checks with beta/stable selection.
+- [ ] Add signed update manifests, protected release signing and client verification.
+- [ ] Add consent-gated verified download and idle installer handoff; preserve portable use.
+- [ ] Test hostile update data, offline/rate-limit behavior and interrupted upgrades.
+- [ ] Record interactive installation/update and clean-host verification evidence.
 
 Follow [the publication checklist](docs/open-source-readiness.md) for evidence and the
 distinction between publishing development source and distributing production binaries.

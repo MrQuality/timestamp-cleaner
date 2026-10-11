@@ -16,7 +16,9 @@ not a production-readiness claim. No paid installer tool or service is required.
 See [portable instructions](portable-windows.md) and [setup/recovery](windows-installer.md).
 Both use the same verified application payload. FFmpeg/FFprobe and Microsoft's Visual C++
 v14 x64 runtime are external. Setup downloads no prerequisites and requests no elevation.
-MSI, signing, automatic updates and Linux binary packages remain deferred.
+MSI, Windows code signing and Linux binary packages remain deferred. Automatic update
+checks and consent-gated installation are accepted work in the
+[reporting/update design](reporting-and-updates.md); beta.2 updates remain manual.
 
 Download `SHA256SUMS.txt` from the same release and compare the chosen file with:
 
