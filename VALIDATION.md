@@ -273,3 +273,46 @@ The page uses no browser JavaScript, remote fonts or analytics. Builds resolve t
 newest published Windows ZIP with its checksum, including prereleases and excluding
 drafts. Future published/edited releases refresh the site; manual main dispatch
 handles deletion/removal scenarios. No executable or release asset was changed.
+
+## Free setup EXE and public beta.2
+
+On 2026-10-11, PR #10 merged through the protected branch after all seven required
+checks passed. Independent five-axis review found no Required or Critical findings.
+The annotated `v0.1.0-beta.2` tag points to merged source
+`4c6f142d5131044ede4feafd524fdddb923dd23f`; published beta.1 assets remain unchanged.
+
+- All 18 Python tests passed. Inverting the installer payload digest guard caused
+  a focused test failure; the mutation was restored. Strict NSIS compilation,
+  Actionlint, PowerShell syntax, documentation links and whitespace checks passed.
+- Tagged [release run 38112171619](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38112171619)
+  passed Windows/Linux source, media, minimum-Rust, dependency audit, license/source
+  policy and secret checks. Windows compiled the setup with pinned NSIS 3.12.
+- The disposable Windows runner passed silent installation, all installed payload
+  hashes, fixed destination despite `/D`, same-version collision rejection,
+  relocated-uninstaller rejection, uninstall cleanup and added-file preservation.
+- Downloaded draft assets matched their shared SHA-256 checksums. ZIP membership,
+  all 271 payload hashes, version, source commit and x64 target metadata passed.
+  The ZIP includes 141 dependency notice sets. Setup resources identify beta.2;
+  Authenticode reports `NotSigned`, as disclosed in the release notes.
+- ZIP: 4,052,279 bytes; SHA-256
+  `fab8c623bee980b7f3d6ee114a3587bc95a45d1e51b21f5cd567c139fc9ca44e`.
+- Setup EXE: 3,612,673 bytes; SHA-256
+  `4a6148c98de666b8ccd36868438494a74760c4305c99aadba07aaa7e64f41f5d`.
+- The [release](https://github.com/MrQuality/timestamp-cleaner/releases/tag/v0.1.0-beta.2)
+  was published with `isDraft=false`, `isPrerelease=true` and `--latest=false`.
+- The first release-event Pages deployment still served beta.1 during verification.
+  Manual refresh [38112648879](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38112648879)
+  succeeded; the live website then contained beta.2 setup, ZIP and checksum links.
+  All three public downloads returned HTTP 200 with the expected content lengths.
+  Browser visual/keyboard verification remains unavailable.
+
+The documentation audit corrected obsolete release claims and ZIP-only guidance;
+added setup, recovery and FAQ documents; and reviewed README, security, contribution,
+third-party, release, website and repository-setting guidance against the source.
+Historical validation remains scoped to its original checkpoint.
+
+These runner checks do not establish interactive setup, application startup,
+accessibility, cross-version use or clean-host prerequisite recovery. The owner
+deferred clean-host verification to beta testing. Exact-beta.2 MKV/MP4 GUI smoke tests,
+application PE branding and artifact-specific license/notice review remain pending.
+No repair-algorithm or external Rust dependency versions changed in this release.

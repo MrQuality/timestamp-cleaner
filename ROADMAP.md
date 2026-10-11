@@ -84,7 +84,7 @@ a usable native GUI and a media pipeline; it is not the completed product.
 - [x] Preserve added files on uninstall; reject same-version collisions and arbitrary destination paths.
 - [x] Add setup build, payload/collision/uninstall tests and release assets to Windows CI.
 - [x] Document prerequisites, side-by-side updates, uninstall and partial-install recovery.
-- [ ] Observe the Windows runner's actual install/uninstall results and verify downloadable setup.
+- [x] Observe the Windows runner's actual install/uninstall results and verify downloadable setup.
 - [ ] Manually verify interactive setup, accessibility, clean-host startup and cross-version use.
 
 See [release instructions](docs/releases.md). ZIP and free NSIS setup EXE are the current scope;
