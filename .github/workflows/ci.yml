@@ -65,8 +65,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Installer packaging failed' }
           ./scripts/test_installer.ps1 -Installer "dist/timestamp-cleaner-$version-windows-x64-setup.exe" -Version $version
       - name: Upload Windows portable preview
-        # Both formats contain the same verified application payload.
-        if: runner.os == 'Windows'
+        # PRs still build/test both formats, but do not consume artifact storage.
+        # Main pushes, release callers and explicit manual previews retain uploads.
+        if: runner.os == 'Windows' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: windows-portable-${{ github.run_attempt }}
