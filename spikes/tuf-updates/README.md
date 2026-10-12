@@ -32,8 +32,9 @@ collects the complete bounded catalog stream before exposing JSON, and has a fiv
 cooperative timeout; this is not a hard wall-clock bound. File URLs and arbitrary fixture endpoints are deliberate test
 facilities. Production origin/redirect policy, atomic storage, cross-process locking,
 catalog schema/version policy and user-facing cancellation are not implemented here.
-The upstream datastore does not persist roots and uses non-atomic file writes; the
-probe's additional root write is also non-atomic. Do not integrate this storage path
+The upstream datastore writes roots as well as other roles, but the next loader
+call must explicitly receive the saved root. The probe reuses `state/root.json`
+and rejects a missing root in nonempty state. Upstream writes are non-atomic. Do not integrate this storage path
 into executable updates without resolving those gates.
 
 Inspect the spike separately from the app:

@@ -12,7 +12,7 @@ async fn process_restart_and_same_version_renewal() {
     assert_eq!(first, require_success(fixture.probe(&server, &state)));
     fixture.publish(&server, 2, FUTURE).await;
     assert_eq!(first, require_success(fixture.probe(&server, &state)));
-    assert!(state.join("trusted-root.json").exists());
+    assert!(state.join("root.json").exists());
     assert!(state.join("timestamp.json").exists());
 }
 
@@ -141,6 +141,10 @@ async fn stalled_http_peer_is_cancelled_without_exposing_catalog() {
     // Tokio's timeout is cooperative: synchronous transport initialization can
     // delay it. Record observed latency rather than assert a false hard bound.
     eprintln!("stalled peer elapsed: {elapsed:?}");
+    // A first-attempt network failure must not make a fresh client unrecoverable.
+    let recovery = fixture.dir.path().join("recovery-repository");
+    fixture.publish(&recovery, 1, FUTURE).await;
+    require_success(fixture.probe(&recovery, &fixture.dir.path().join("state")));
 }
 
 #[tokio::test]
@@ -256,6 +260,54 @@ async fn signed_invalid_package_limits_fail_before_opening_package() {
         assert!(
             message.contains("package length exceeds spike policy")
                 || message.contains("invalid package SHA-256"),
+            "{message}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn root_rotation_survives_later_metadata_failure() {
+    let original = Fixture::new().await;
+    let mut replacement = Fixture::new().await;
+    replacement.root.version = number(2);
+    let server = original.dir.path().join("repository");
+    let state = original.dir.path().join("state");
+    original.publish(&server, 1, FUTURE).await;
+    let catalog = require_success(original.probe(&server, &state));
+    replacement.publish(&server, 2, EXPIRED).await;
+    replacement.sign_root(Some(&original)).await;
+    std::fs::copy(
+        replacement.dir.path().join("root.json"),
+        server.join("metadata/2.root.json"),
+    )
+    .unwrap();
+    let message = require_failure(original.probe(&server, &state));
+    assert!(message.contains("Expired"), "{message}");
+    let root: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(state.join("root.json")).unwrap()).unwrap();
+    assert_eq!(root["signed"]["version"], 2);
+    replacement.publish(&server, 3, FUTURE).await;
+    std::fs::remove_file(server.join("metadata/2.root.json")).unwrap();
+    assert_eq!(catalog, require_success(original.probe(&server, &state)));
+    require_failure(original.probe(&server, &original.dir.path().join("obsolete-client")));
+}
+
+#[tokio::test]
+async fn missing_or_corrupt_saved_root_never_falls_back_to_bootstrap() {
+    for missing in [true, false] {
+        let fixture = Fixture::new().await;
+        let server = fixture.dir.path().join("repository");
+        let state = fixture.dir.path().join("state");
+        fixture.publish(&server, 1, FUTURE).await;
+        require_success(fixture.probe(&server, &state));
+        if missing {
+            std::fs::remove_file(state.join("root.json")).unwrap();
+        } else {
+            std::fs::write(state.join("root.json"), b"{").unwrap();
+        }
+        let message = require_failure(fixture.probe(&server, &state));
+        assert!(
+            message.contains("missing trusted root") || message.contains("ParseTrustedMetadata"),
             "{message}"
         );
     }

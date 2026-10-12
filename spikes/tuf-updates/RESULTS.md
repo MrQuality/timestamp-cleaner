@@ -70,14 +70,16 @@ and by fixtures, and is now a direct runtime dependency of the isolated probe.
 
 This is a byte-integrity experiment, not the application catalog schema, protected
 package origin policy or transactional installer downloader. Those remain gates.
-The current ordinary suite has ten functional tests; the publisher ceremony is an
+Two further root tests check progress after later expiry failure and reject a
+missing/corrupt saved root. The current ordinary suite has twelve functional tests; the publisher ceremony is an
 explicit separately run test. Hosted results above are historical evidence for
 their stated commits, not confirmation of unpushed or later changes.
 
 ## Local release-probe measurements
 
 `measure_probe.py` ran five trials per condition with the 6,768,128-byte Windows
-release binary, Python 3.10.11, Windows build 26300, and the 26-byte test catalog.
+baseline release binary (source 856936d, before package/root corrections),
+Python 3.10.11, Windows build 26300, and the 26-byte test catalog.
 The [raw measurement record](measurements/windows-2026-10-12.json) contains all
 20 invocations and sampling counts. Each trial starts a new verifier process. Fresh-state and persisted-state trials
 share a fixture but do not reuse an HTTP client. Values include process creation
@@ -100,14 +102,25 @@ measurements after dependency approval.
 
 ## Architectural findings
 
-1. **Persist trust explicitly.** In tough 0.24.0, the datastore saves timestamp,
-   snapshot and targets, but excludes root. The probe persists verified root
-   metadata separately. Omitting this breaks subsequent trust after rotation.
-2. **Storage is a production blocker.** The upstream datastore and probe root
-   persistence use direct, non-atomic writes. In-process protection does not establish
+1. **Reuse saved trust explicitly.** Correction to the initial report: tough
+   0.24.0 writes root.json in the datastore, including verified rotations before a
+   later role may fail. It does not automatically select that file as the next
+   loader's root argument. The probe now supplies state/root.json and removes its
+   redundant trusted-root.json copy. Reverting to the embedded root on every load
+   breaks continuity after rotation; falling back when saved state is damaged can
+   discard trust progress. Missing root in nonempty state fails closed. A fresh
+   store seeds the caller-trusted bootstrap using upstream self-signature validation
+   before network work, so a first-request timeout can be retried normally. This
+   initial write is also non-atomic and remains an explicit production gate.
+2. **Storage is a production blocker.** The upstream datastore uses direct,
+   non-atomic writes; root updates remove the previous file before rewriting it. In-process protection does not establish
    a multi-process transaction. We must design locking, crash-safe publication and
    fail-closed corruption handling together; deleting state to recover would discard
    rollback protection. Test partial writes, disk-full and concurrent app instances.
+   A naive staged copy committed only after full catalog success also loses verified
+   role progress when a later role fails. Preserve the verifier's per-role commit
+   semantics. The datastore is private; resolving this may require an upstream
+   change rather than pretending an outer wrapper makes its writes atomic.
 3. **Verify complete streams.** Target bytes can arrive before final hash/length
    verification. The probe buffers only the bounded catalog and parses it after
    successful stream completion. Installer downloads must go to an unpublished
@@ -139,9 +152,18 @@ integration; they are explicit subjects of this experiment, not accepted app def
 
 ## Decision and next implementation boundary
 
-**Proceed with evaluation; do not integrate this probe into the app.** Standard
-TUF verification and durable root rotation are viable enough to continue. Storage,
-transport and license gates prevent a production dependency decision today.
+**Proceed with standard TUF; no-go for production integration using the stock
+store in this probe.** Signature, renewal and root-continuity behavior are viable.
+The next engineering slice must resolve upstream storage semantics, constrained
+transport and artifact notices before selecting the production runtime dependency.
+Do not turn this experiment into installer code while those defects remain.
+
+The minimal storage work should preserve verified per-role progress, atomic durable
+replacement and explicit missing/corrupt-state failure under a cross-process lock.
+An upstream-ready patch or supported storage hook should be evaluated against the
+same fixtures and crash fault injection; a whole-generation copy committed only
+on success is not an equivalent solution. No upstream issue/PR is opened by this
+experiment, and no unreviewed fork is added to the app.
 
 Next increments, in order:
 

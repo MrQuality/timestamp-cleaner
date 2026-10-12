@@ -16,12 +16,22 @@ async fn main() -> Result<(), Failure> {
     }
     let state = PathBuf::from(&args[3]);
     std::fs::create_dir_all(&state)?;
-    let persisted_root = state.join("trusted-root.json");
-    let root = std::fs::read(if persisted_root.exists() {
-        persisted_root
+    let persisted_root = state.join("root.json");
+    let root = if persisted_root.exists() {
+        std::fs::read(persisted_root)?
     } else {
-        PathBuf::from(&args[0])
-    })?;
+        if std::fs::read_dir(&state)?.next().is_some() {
+            return Err("missing trusted root in nonempty state; manual recovery required".into());
+        }
+        let root = std::fs::read(PathBuf::from(&args[0]))?;
+        let signed: tough::schema::Signed<tough::schema::Root> = serde_json::from_slice(&root)?;
+        signed.signed.verify_role(&signed)?;
+        // Seed the caller-trusted bootstrap before network work. Otherwise an
+        // initial timeout leaves a clock file but no root and makes retry ambiguous.
+        // This write is intentionally subject to the same production atomicity gate.
+        std::fs::write(&persisted_root, &root)?;
+        root
+    };
     let work = async {
         let repo = RepositoryLoader::new(
             &root,
@@ -31,12 +41,9 @@ async fn main() -> Result<(), Failure> {
         .datastore(&state)
         .load()
         .await?;
-        // The library's datastore excludes root. This probe persists it explicitly.
-        // Crash-safe storage and process locking remain production integration gates.
-        std::fs::write(
-            state.join("trusted-root.json"),
-            serde_json::to_vec(repo.root())?,
-        )?;
+        // tough persists root.json even if a later role fails. On the next run,
+        // supply that root explicitly; the loader does not select it for us.
+        // Atomic storage and process locking remain production integration gates.
         let name = TargetName::new("catalog-v1.json")?;
         if repo
             .targets()
