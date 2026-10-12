@@ -158,6 +158,9 @@ Start with the [FAQ and troubleshooting](docs/faq.md), [media-tool recovery](doc
 [release process](docs/releases.md), and [pending manual checks](docs/manual-verification.md).
 [Architecture](docs/architecture.md), [security](SECURITY.md) and [validation evidence](VALIDATION.md)
 explain the engineering scope and its current limits.
+The [updater maintainer checklist](docs/updater-maintainer-onboarding.md) covers
+free-service boundaries, later signing setup and ongoing maintenance.
+
 Accepted [bug reporting and update requirements](docs/reporting-and-updates.md)
 describe planned features; beta.2 still uses manual reports and updates.
 

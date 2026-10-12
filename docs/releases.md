@@ -36,6 +36,12 @@ Rust/media tests and a release build. It packages the ZIP, installs pinned NSIS 
 builds setup from that ZIP, then tests silent setup, payload hashes, destination/collision
 guards, relocated-uninstaller refusal, uninstall and added-file preservation.
 
+PRs build and test both packages without uploading them. Main pushes, tagged release
+callers and explicit manual quality-workflow runs retain preview uploads. To obtain
+a PR branch preview deliberately, dispatch the quality workflow on that branch;
+review artifact-storage allowance first. Public standard runner minutes are free,
+but stored artifacts have a separate allowance. See [GitHub billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
+
 The `windows-portable-<attempt>` Actions artifact contains ZIP, setup EXE and checksums.
 The historical artifact name is retained for compatibility. These previews expire after
 14 days; they are not public releases. Extract GitHub's outer artifact wrapper first.

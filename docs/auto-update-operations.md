@@ -4,6 +4,9 @@ Proposed operating model for [the update ADR](auto-update-architecture.md). This
 not the current release workflow. No keys, secrets, schedules, branches or environments
 are created by this design. Implementation requires the feasibility gates below.
 
+The [maintainer onboarding checklist](updater-maintainer-onboarding.md) separates
+current review, later owner setup, free-service boundaries and ongoing maintenance.
+
 ## Ownership and signing
 
 The application owns version/channel policy; TUF owns metadata verification; NSIS
