@@ -9,7 +9,7 @@ update publication job is changed by this workspace.
 
 | Check | Observed result | Limit |
 | --- | --- | --- |
-| Windows x64, Rust 1.92.0 | Release build; eight focused integration tests pass | The initial zero-test binary harness launch returned access denied; functional harness subsequently runs. Hosted runner still needs inspection. |
+| Windows x64, Rust 1.92.0 | Release build; eight focused integration tests pass | Standard full-suite command still fails to launch the empty binary harness with OS access denied (error 5); all eight functional integration tests run. Hosted runner still needs inspection. |
 | Ubuntu 22.04 under WSL, Rust 1.92.0 | Eight-test full suite passes | WSL is not an independent hosted Linux runner. |
 | Formatting / strict Clippy | Pass with local Rust 1.93.0 | Hosted workflow pins both to 1.92.0. |
 | Audit | cargo-audit 0.22.2: no warnings/advisories in the 190-package lock graph | Point-in-time result; this graph includes unused platform dependencies. |
@@ -33,6 +33,12 @@ response also reached that outer timeout under default retries. These tests prov
 failure without catalog exposure; they do **not** prove prompt cancellation or
 that truncation is diagnosed before retries. The tests record latency; a strict wall-clock bound remains an unmet integration
 requirement.
+
+The hosted [TUF workflow](https://github.com/MrQuality/timestamp-cleaner/actions/workflows/tuf-spike.yml)
+runs the unmodified full-suite command on both runners; it does not suppress the
+locally denied empty harness. The local denial was reproduced after integration
+success. Its cause is not established, and no endpoint protection or executable
+permissions were changed to bypass it.
 
 ## Architectural findings
 

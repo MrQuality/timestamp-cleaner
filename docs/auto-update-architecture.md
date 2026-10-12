@@ -219,9 +219,9 @@ Before selecting a dependency version, spike `tough`/`tuftool` against Rust 1.92
 Windows/Linux CI, Apache policy, dependency audit, persistent root/metadata handling,
 transport limits and cancellation. Confirm whether updated roots require explicit
 application persistence; do not assume the datastore saves every trust artifact.
-Measure release binary growth, startup overhead and idle worker memory. No crate has
-been added and no compatibility, cryptographic integration or runtime benchmark has
-been established by this ADR.
+Measure release binary growth, startup overhead and idle worker memory. No application dependency is added by this ADR. The isolated
+[feasibility experiment](../spikes/tuf-updates/RESULTS.md) records current verifier
+evidence and remaining compatibility, storage, transport and measurement gates.
 
 Required tests: deterministic clock/network/filesystem policy tests; beta.9/beta.10
 and stable promotion; altered packages/catalogs; wrong/rotated/revoked keys; rollback,
