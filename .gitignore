@@ -1,5 +1,6 @@
 # Rust build output and rustfmt backups. Keep Cargo.lock tracked for this app.
 /target/
+/spikes/**/target/
 /dist/
 **/*.rs.bk
 
