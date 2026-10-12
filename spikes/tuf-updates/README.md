@@ -42,3 +42,28 @@ The declaration/source check is expected to expose newly required licenses under
 unchanged project policy. Do not broaden policy or claim artifact-notice clearance
 merely to obtain a green experiment. No spike binaries or dependency notices are
 added to current release assets.
+
+## Publisher ceremony experiment
+
+The ordinary suite does not require the publisher CLI. Its explicitly ignored
+publisher test is run separately; a skipped test is not publisher evidence. Install
+`tuftool = 0.17.0` with `--locked --no-default-features` using an isolated Rust 1.94.1
+toolchain (its AWS dependencies prevent building it on 1.92/1.93). Keep the app MSRV
+unchanged. The dedicated read-only Linux CI job builds this tool and runs:
+
+```powershell
+$env:TUFTOOL_BIN = (Resolve-Path .tools/tuftool/bin/tuftool.exe).Path
+cargo +1.92.0 test --locked --manifest-path spikes/tuf-updates/Cargo.toml --test verification publisher::cli_renewal_rotation_and_timestamp_key_separation -- --ignored --nocapture
+```
+
+The test generates disposable keys, runs CLI metadata renewal and old-root
+cross-signing, verifies the results with fresh client processes, rejects CLI
+multi-role signing with just the timestamp key, and uses the upstream role signer
+for timestamp-only renewal without modifying snapshot/targets bytes. It does not
+create a production repository. CLI initial `create`, release promotion, expiry
+monitoring, version allocation and deployment races remain untested.
+
+For measurements, optionally set `TUF_SPIKE_EXPORT` to a **fresh**, ignored path
+before running the publisher experiment. It exports only the public bootstrap root,
+metadata and catalog. Never copy the complete temporary fixture directory: it
+contains private test keys. An existing export path fails rather than overwrites.

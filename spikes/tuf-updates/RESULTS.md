@@ -9,14 +9,15 @@ update publication job is changed by this workspace.
 
 | Check | Observed result | Limit |
 | --- | --- | --- |
-| Windows x64, Rust 1.92.0 | Release build; eight focused integration tests pass | Standard full-suite command still fails to launch the empty binary harness with OS access denied (error 5); all eight functional integration tests run. Hosted runner still needs inspection. |
+| Windows x64, Rust 1.92.0 | Release build; eight focused integration tests pass | Standard full-suite command still fails to launch the empty binary harness with OS access denied (error 5); all eight functional integration tests run. Hosted full suite also passes; local empty-harness denial remains unexplained. |
 | Ubuntu 22.04 under WSL, Rust 1.92.0 | Eight-test full suite passes | WSL is not an independent hosted Linux runner. |
-| Formatting / strict Clippy | Pass with local Rust 1.93.0 | Hosted workflow pins both to 1.92.0. |
+| Formatting / strict Clippy | Pass locally on 1.93.0 and hosted on 1.92.0 | No application graph change. |
+| Hosted Windows/Linux | [Run 38215416403](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38215416403): both format, strict Clippy, full test and release build jobs pass | Eight functional tests on each runner; Windows stalled request about 5.01 seconds in this run. |
 | Audit | cargo-audit 0.22.2: no warnings/advisories in the 190-package lock graph | Point-in-time result; this graph includes unused platform dependencies. |
 | Source policy | Pass under the existing project deny policy | License approval remains separate. |
 | License policy | Rejects aws-lc-sys 0.45.0 and subtle 2.6.1 (BSD-3-Clause), webpki-root-certs 1.0.9 (CDLA-Permissive-2.0) | Preserve policy; review exact artifact contents and notices before adding app dependencies. |
 | Windows release probe | 6,768,128 bytes, thin LTO, stripped, one codegen unit | Standalone size, not incremental application growth. No memory/startup baseline measured yet. |
-| Publisher CLI | tuftool 0.17.0 locked/no-default-features fails on 1.92/1.93; builds and reports its version on isolated 1.94.1 | AWS SDK dependencies still require 1.94.1. CLI publish/renew/root ceremony is not tested end to end. |
+| Publisher CLI | tuftool 0.17.0 locked/no-default-features fails on 1.92/1.93; builds and reports its version on isolated 1.94.1 | AWS SDK dependencies still require 1.94.1. Windows CLI renewal/cross-sign ceremony passes separately; initial CLI create, production publication and deployment races are untested. |
 
 The tests use fresh temporary four-role Ed25519 keys and upstream signing code.
 The process-restart test verifies the same app version after metadata renewal;
@@ -39,6 +40,19 @@ runs the unmodified full-suite command on both runners; it does not suppress the
 locally denied empty harness. The local denial was reproduced after integration
 success. Its cause is not established, and no endpoint protection or executable
 permissions were changed to bypass it.
+
+The separate Windows publisher test passes with tuftool 0.17.0: CLI renewal keeps
+the application catalog unchanged, CLI old-root cross-signing enables persisted
+rotation, and a timestamp key alone cannot sign a targets/snapshot generation.
+The generic `tuftool update` command always rebuilds those roles; it cannot implement
+the online timestamp-only job. The test demonstrates the upstream `SignedRole`
+signer can renew only timestamp metadata, while snapshot/targets bytes stay identical
+and the standard verifier accepts the same catalog. Production needs a narrow
+publisher command around this API, plus version allocation, authorization and
+freshness checks; do not upload offline keys to work around the CLI limitation.
+The explicit publisher test is excluded from the ordinary eight-test suite and
+must run with `--ignored` and the pinned tool path. A dedicated hosted publisher job
+is added; its results are pending for this increment.
 
 ## Architectural findings
 

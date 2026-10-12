@@ -200,3 +200,6 @@ fn accept_fixture_connection(listener: &std::net::TcpListener) -> std::net::TcpS
         }
     }
 }
+
+#[path = "support/publisher.rs"]
+mod publisher;
