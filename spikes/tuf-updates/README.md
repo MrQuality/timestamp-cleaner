@@ -67,3 +67,20 @@ For measurements, optionally set `TUF_SPIKE_EXPORT` to a **fresh**, ignored path
 before running the publisher experiment. It exports only the public bootstrap root,
 metadata and catalog. Never copy the complete temporary fixture directory: it
 contains private test keys. An existing export path fails rather than overwrites.
+
+## Runtime measurements
+
+With a release probe binary and the public fixture export above:
+
+```powershell
+python spikes/tuf-updates/measure_probe.py .tools/tuf-target/release/timestamp-cleaner-tuf-spike.exe .tools/tuf-public-benchmark
+```
+
+The standard-library helper runs five trials each for file/local HTTP and
+fresh/persisted state. Each trial launches a separate process; the HTTP server binds
+only loopback and serves the public export. Windows samples OS peak-working-set
+counters; a short process can exit between samples, so these are lower bounds.
+No private key, installer, real release or remote server is used. Output is JSON;
+redirect to an ignored file with a UTF-8-aware shell if it will be parsed elsewhere.
+It supports non-Windows timing but does not measure non-Windows memory. This does
+not measure integrated app size growth, TLS/proxy latency or a reused worker.

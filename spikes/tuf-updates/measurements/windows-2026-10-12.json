@@ -1,0 +1,173 @@
+{
+  "platform": "Windows-10-10.0.26300-SP0",
+  "python": "3.10.11",
+  "binary_bytes": 6768128,
+  "results": [
+    {
+      "transport": "file",
+      "condition": "fresh-state",
+      "trial": 0,
+      "elapsed_ms": 1769.207,
+      "sampled_peak_working_set_bytes": 6455296,
+      "memory_samples": 1
+    },
+    {
+      "transport": "file",
+      "condition": "persisted-state",
+      "trial": 0,
+      "elapsed_ms": 591.484,
+      "sampled_peak_working_set_bytes": 7114752,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "fresh-state",
+      "trial": 1,
+      "elapsed_ms": 601.202,
+      "sampled_peak_working_set_bytes": 6410240,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "persisted-state",
+      "trial": 1,
+      "elapsed_ms": 613.997,
+      "sampled_peak_working_set_bytes": 7106560,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "fresh-state",
+      "trial": 2,
+      "elapsed_ms": 587.217,
+      "sampled_peak_working_set_bytes": 6365184,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "persisted-state",
+      "trial": 2,
+      "elapsed_ms": 588.876,
+      "sampled_peak_working_set_bytes": 6545408,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "fresh-state",
+      "trial": 3,
+      "elapsed_ms": 565.609,
+      "sampled_peak_working_set_bytes": 7127040,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "persisted-state",
+      "trial": 3,
+      "elapsed_ms": 535.708,
+      "sampled_peak_working_set_bytes": 6909952,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "fresh-state",
+      "trial": 4,
+      "elapsed_ms": 549.867,
+      "sampled_peak_working_set_bytes": 7114752,
+      "memory_samples": 2
+    },
+    {
+      "transport": "file",
+      "condition": "persisted-state",
+      "trial": 4,
+      "elapsed_ms": 552.41,
+      "sampled_peak_working_set_bytes": 7098368,
+      "memory_samples": 3
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "fresh-state",
+      "trial": 0,
+      "elapsed_ms": 1897.914,
+      "sampled_peak_working_set_bytes": 7995392,
+      "memory_samples": 43
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "persisted-state",
+      "trial": 0,
+      "elapsed_ms": 1694.882,
+      "sampled_peak_working_set_bytes": 7995392,
+      "memory_samples": 39
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "fresh-state",
+      "trial": 1,
+      "elapsed_ms": 1726.405,
+      "sampled_peak_working_set_bytes": 7987200,
+      "memory_samples": 38
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "persisted-state",
+      "trial": 1,
+      "elapsed_ms": 1700.92,
+      "sampled_peak_working_set_bytes": 7983104,
+      "memory_samples": 39
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "fresh-state",
+      "trial": 2,
+      "elapsed_ms": 1739.543,
+      "sampled_peak_working_set_bytes": 7995392,
+      "memory_samples": 41
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "persisted-state",
+      "trial": 2,
+      "elapsed_ms": 1738.926,
+      "sampled_peak_working_set_bytes": 7983104,
+      "memory_samples": 38
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "fresh-state",
+      "trial": 3,
+      "elapsed_ms": 1731.926,
+      "sampled_peak_working_set_bytes": 8544256,
+      "memory_samples": 41
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "persisted-state",
+      "trial": 3,
+      "elapsed_ms": 1718.693,
+      "sampled_peak_working_set_bytes": 7987200,
+      "memory_samples": 39
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "fresh-state",
+      "trial": 4,
+      "elapsed_ms": 1737.61,
+      "sampled_peak_working_set_bytes": 7991296,
+      "memory_samples": 39
+    },
+    {
+      "transport": "http-loopback",
+      "condition": "persisted-state",
+      "trial": 4,
+      "elapsed_ms": 1733.319,
+      "sampled_peak_working_set_bytes": 7970816,
+      "memory_samples": 39
+    }
+  ],
+  "limits": [
+    "Separate process per trial; persisted-state does not reuse an HTTP client",
+    "Loopback HTTP excludes TLS, real CDN/proxy and internet latency",
+    "Sampled Windows OS peak is a lower bound; non-Windows memory is unmeasured",
+    "Includes process creation and sampling overhead; not application incremental cost"
+  ]
+}

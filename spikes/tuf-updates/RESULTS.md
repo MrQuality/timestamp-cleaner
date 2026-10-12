@@ -16,7 +16,7 @@ update publication job is changed by this workspace.
 | Audit | cargo-audit 0.22.2: no warnings/advisories in the 190-package lock graph | Point-in-time result; this graph includes unused platform dependencies. |
 | Source policy | Pass under the existing project deny policy | License approval remains separate. |
 | License policy | Rejects aws-lc-sys 0.45.0 and subtle 2.6.1 (BSD-3-Clause), webpki-root-certs 1.0.9 (CDLA-Permissive-2.0) | Preserve policy; review exact artifact contents and notices before adding app dependencies. |
-| Windows release probe | 6,768,128 bytes, thin LTO, stripped, one codegen unit | Standalone size, not incremental application growth. No memory/startup baseline measured yet. |
+| Windows release probe | 6,768,128 bytes, thin LTO, stripped, one codegen unit | Standalone size, not incremental application growth. Public-fixture startup/OS-memory measurements below; integrated app cost remains unmeasured. |
 | Publisher CLI | tuftool 0.17.0 locked/no-default-features fails on 1.92/1.93; builds and reports its version on isolated 1.94.1 | AWS SDK dependencies still require 1.94.1. Windows CLI renewal/cross-sign ceremony passes separately; initial CLI create, production publication and deployment races are untested. |
 
 The tests use fresh temporary four-role Ed25519 keys and upstream signing code.
@@ -53,6 +53,30 @@ freshness checks; do not upload offline keys to work around the CLI limitation.
 The explicit publisher test is excluded from the ordinary eight-test suite and
 must run with `--ignored` and the pinned tool path. A dedicated hosted publisher job
 is added; its results are pending for this increment.
+
+## Local release-probe measurements
+
+`measure_probe.py` ran five trials per condition with the 6,768,128-byte Windows
+release binary, Python 3.10.11, Windows build 26300, and the 26-byte test catalog.
+The [raw measurement record](measurements/windows-2026-10-12.json) contains all
+20 invocations and sampling counts. Each trial starts a new verifier process. Fresh-state and persisted-state trials
+share a fixture but do not reuse an HTTP client. Values include process creation
+and 1 ms requested sampling intervals (actual scheduling is coarser).
+
+| Transport / state | Median elapsed | Min?max | Highest sampled OS peak working set |
+| --- | --- | --- | --- |
+| File / fresh | 587.217 ms | 549.867?1,769.207 ms | 6.80 MiB |
+| File / persisted | 588.876 ms | 535.708?613.997 ms | 6.79 MiB |
+| Loopback HTTP / fresh | 1,737.610 ms | 1,726.405?1,897.914 ms | 8.15 MiB |
+| Loopback HTTP / persisted | 1,718.693 ms | 1,694.882?1,738.926 ms | 7.62 MiB |
+
+All 20 invocations verified the same catalog successfully. File trials had only
+1?3 memory samples, and HTTP trials 38?43: treat sampled peaks as **lower bounds**,
+not a rigorous memory ceiling. These measurements exclude TLS, real CDN/proxy
+latency and the GUI. They cannot explain the earlier slow debug cancellation or
+predict a reused update worker. The baseline is a standalone probe; incremental
+application binary growth and worker idle/peak memory still require integration
+measurements after dependency approval.
 
 ## Architectural findings
 
