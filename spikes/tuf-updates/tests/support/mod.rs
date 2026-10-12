@@ -130,13 +130,17 @@ impl Fixture {
     }
 
     pub fn probe(&self, destination: &Path, state: &Path) -> Output {
+        self.probe_metadata_url(
+            destination,
+            state,
+            Url::from_directory_path(destination.join("metadata")).unwrap(),
+        )
+    }
+
+    pub fn probe_metadata_url(&self, destination: &Path, state: &Path, metadata: Url) -> Output {
         std::process::Command::new(env!("CARGO_BIN_EXE_timestamp-cleaner-tuf-spike"))
             .arg(self.dir.path().join("root.json"))
-            .arg(
-                Url::from_directory_path(destination.join("metadata"))
-                    .unwrap()
-                    .as_str(),
-            )
+            .arg(metadata.as_str())
             .arg(
                 Url::from_directory_path(destination.join("targets"))
                     .unwrap()

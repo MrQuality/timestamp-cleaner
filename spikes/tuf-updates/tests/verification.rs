@@ -101,3 +101,102 @@ async fn rotated_root_is_persisted_and_required_on_the_next_process() {
     // The same repository fails with the obsolete embedded root and a fresh datastore.
     require_failure(original.probe(&server, &original.dir.path().join("fresh-state")));
 }
+
+#[tokio::test]
+async fn stalled_http_peer_is_cancelled_without_exposing_catalog() {
+    use std::{
+        io::Read,
+        net::TcpListener,
+        sync::mpsc,
+        time::{Duration, Instant},
+    };
+    let fixture = Fixture::new().await;
+    fixture.sign_root(None).await;
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let endpoint = format!("http://{}/", listener.local_addr().unwrap())
+        .parse()
+        .unwrap();
+    let (stop, stopped) = mpsc::channel();
+    let peer = std::thread::spawn(move || {
+        let mut socket = accept_fixture_connection(&listener);
+        socket
+            .set_read_timeout(Some(Duration::from_secs(8)))
+            .unwrap();
+        let mut request = [0; 4096];
+        assert!(socket.read(&mut request).unwrap() > 0);
+        // Keep the connection open without headers; release it after the probe exits.
+        let _ = stopped.recv_timeout(Duration::from_secs(8));
+    });
+    let started = Instant::now();
+    let output = fixture.probe_metadata_url(
+        fixture.dir.path(),
+        &fixture.dir.path().join("state"),
+        endpoint,
+    );
+    let elapsed = started.elapsed();
+    let _ = stop.send(());
+    peer.join().unwrap();
+    let message = require_failure(output);
+    assert!(message.contains("Elapsed"), "{message}");
+    // Tokio's timeout is cooperative: synchronous transport initialization can
+    // delay it. Record observed latency rather than assert a false hard bound.
+    eprintln!("stalled peer elapsed: {elapsed:?}");
+}
+
+#[tokio::test]
+async fn interrupted_http_response_never_exposes_catalog() {
+    use std::{
+        io::{Read, Write},
+        net::TcpListener,
+        time::Duration,
+    };
+    let fixture = Fixture::new().await;
+    fixture.sign_root(None).await;
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let endpoint = format!("http://{}/", listener.local_addr().unwrap())
+        .parse()
+        .unwrap();
+    let peer = std::thread::spawn(move || {
+        let mut socket = accept_fixture_connection(&listener);
+        socket
+            .set_read_timeout(Some(Duration::from_secs(8)))
+            .unwrap();
+        let mut request = [0; 4096];
+        assert!(socket.read(&mut request).unwrap() > 0);
+        socket
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 1024\r\nConnection: close\r\n\r\n{")
+            .unwrap();
+        // Closing before Content-Length bytes tests a real interrupted HTTP body.
+    });
+    let output = fixture.probe_metadata_url(
+        fixture.dir.path(),
+        &fixture.dir.path().join("state"),
+        endpoint,
+    );
+    peer.join().unwrap();
+    let message = require_failure(output);
+    // Default transport retries can defer failure until the outer timeout.
+    eprintln!("interrupted response failure: {message}");
+}
+
+fn accept_fixture_connection(listener: &std::net::TcpListener) -> std::net::TcpStream {
+    use std::{
+        io::ErrorKind,
+        time::{Duration, Instant},
+    };
+    listener.set_nonblocking(true).unwrap();
+    let deadline = Instant::now() + Duration::from_secs(15);
+    loop {
+        match listener.accept() {
+            Ok((socket, _)) => return socket,
+            Err(error) if error.kind() == ErrorKind::WouldBlock => {
+                assert!(
+                    Instant::now() < deadline,
+                    "Probe never connected to fixture peer"
+                );
+                std::thread::sleep(Duration::from_millis(10));
+            }
+            Err(error) => panic!("Fixture accept failed: {error}"),
+        }
+    }
+}
