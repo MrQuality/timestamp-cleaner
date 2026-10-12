@@ -51,7 +51,8 @@ a usable native GUI and a media pipeline; it is not the completed product.
 ## Open-source publication
 
 - [x] Publish the basic GitHub Pages site with current release downloads and setup instructions.
-- [ ] Add application screenshots and an approved before/after example to the website.
+- [x] Add the creator-supplied basic-usage recording with user-controlled playback.
+- [ ] Add an approved before/after comparison example to the website.
 
 - [x] Apache-2.0 license and package metadata; contribution and security-reporting guidance.
 - [x] Tracked application icon, native-window integration and provenance.

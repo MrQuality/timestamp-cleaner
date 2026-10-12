@@ -58,6 +58,9 @@ def build(releases, output):
     (output / "index.html").write_text(page, encoding="utf-8")
     shutil.copyfile(ROOT / "site/style.css", output / "style.css")
     shutil.copyfile(ROOT / "assets/icon-256.png", output / "icon.png")
+    (output / "media").mkdir(exist_ok=True)
+    for name in ("app-demo.mp4", "app-demo-poster.jpg"):
+        shutil.copyfile(ROOT / "site/media" / name, output / "media" / name)
     (output / ".nojekyll").touch()
 
 

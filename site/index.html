@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Restore the view in your family videos. Timestamp Cleaner is a local, open-source desktop app for repairing burned-in camera timestamps.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; media-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Timestamp Cleaner — Keep the memories.</title>
   <link rel="icon" href="icon.png" type="image/png">
@@ -24,6 +24,19 @@
       <div class="actions"><a class="button" href="{{INSTALLER_URL}}">{{INSTALLER_LABEL}}</a><a class="secondary" href="{{DOWNLOAD_URL}}">Download portable ZIP ↓</a><a class="secondary" href="{{RELEASE_URL}}">Release notes ↗</a></div>
       <p class="muted">{{VERSION}} · {{STATUS}} · Windows x64 · Unsigned builds</p>
       <ul class="facts" aria-label="Project highlights"><li>Processed on your computer</li><li>No uploads or telemetry</li><li>Apache 2.0 open source</li></ul>
+    </section>
+    <section class="demo" aria-labelledby="demo-title">
+      <p class="eyebrow">SEE IT IN ACTION</p>
+      <h2 id="demo-title">Your first repair, in 30 seconds.</h2>
+      <p>Watch the basic workflow: open a video, select the timestamp, choose an output format, and export.</p>
+      <figure>
+        <video controls playsinline preload="none" width="1202" height="834" poster="media/app-demo-poster.jpg" aria-label="Timestamp Cleaner basic usage demonstration" aria-describedby="demo-description">
+          <source src="media/app-demo.mp4" type="video/mp4">
+          <p>Your browser cannot play this video. <a href="media/app-demo.mp4">Download the usage demo</a>.</p>
+        </video>
+        <figcaption id="demo-description">Silent screen recording supplied by the project creator. Open a local video, draw a rectangle around its timestamp, choose MKV or MP4, then select Export and save to a new file. <a href="media/app-demo.mp4">Open the video separately</a> (MP4, 1.3 MB).</figcaption>
+      </figure>
+      <p class="muted">Before exporting your own footage, render a preview and compare the original and repaired frames. Keep your originals and check the exported picture and audio.</p>
     </section>
     <section class="story" aria-labelledby="story-title">
       <p class="eyebrow">WHY I BUILT THIS</p>

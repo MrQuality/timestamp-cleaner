@@ -63,7 +63,9 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn("{{", page)
             self.assertIn(release_values([self.beta])["DOWNLOAD_URL"], page)
             self.assertEqual({p.name for p in output.iterdir()},
-                             {"index.html", "style.css", "icon.png", ".nojekyll"})
+                             {"index.html", "style.css", "icon.png", "media", ".nojekyll"})
+            self.assertEqual({p.name for p in (output / "media").iterdir()},
+                             {"app-demo.mp4", "app-demo-poster.jpg"})
 
 
 if __name__ == "__main__":
