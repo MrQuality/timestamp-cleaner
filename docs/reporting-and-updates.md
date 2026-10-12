@@ -14,7 +14,8 @@ Build a versioned, bounded report from an explicit allowlist: application versio
 build/source identifier when available, OS/architecture, operation identifier, error
 category and detected tool versions. Never collect videos, previews, filenames,
 paths, command lines, media metadata, environment variables, account identifiers
-or credentials. Arbitrary subprocess stderr is not safe diagnostic data: categorise
+or credentials. Operation identifiers and error categories must be closed Rust enums,
+not free-form strings. Arbitrary subprocess stderr is not safe diagnostic data: categorize
 it locally rather than automatically including its text. Do not claim regex-based
 redaction can make arbitrary logs safe.
 
@@ -83,6 +84,13 @@ publication. Define private-key storage, protected signing permissions, rotation
 recovery; commit only public verification keys. No direct installer execution is
 enabled until this trust path and its negative tests pass. Until then an update
 notification may open the official release page for manual download.
+
+The proposed [update architecture](auto-update-architecture.md) uses standard TUF
+Ed25519 metadata to authenticate the release catalog, with a separate
+[publication/key runbook](auto-update-operations.md). This refines the signed-manifest
+requirement without inventing a signature protocol. See the existing
+[side-by-side NSIS contract](windows-installer.md). The architecture remains subject
+to the documented compatibility and operational spike; no updater is implemented yet.
 
 Acceptance tests must cover beta.9 versus beta.10, stable promotion, channel changes,
 draft exclusion, same/older versions, missing assets, malformed metadata, rate limits,
