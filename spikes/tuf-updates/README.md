@@ -19,10 +19,15 @@ Fixtures generate four temporary Ed25519 role keys with AWS-LC and construct met
 with the upstream TUF editor. No private key is committed or used for real releases.
 Tests run the verifier as a fresh OS process, checking durable metadata/root state,
 same-version renewal, rollback, expiry, altered signatures, modified/truncated catalog
-bytes, stalled/interrupted local HTTP responses and a cross-signed root rotation. A stale-root negative control proves that the
+bytes, stalled/interrupted local HTTP responses, changed/short/long package bytes,
+invalid signed package limits and a cross-signed root rotation. A stale-root negative control proves that the
 successful restart depends on the explicitly persisted new root.
 
-The CLI takes bootstrap root, metadata URL, targets URL and state directory. It
+The CLI takes bootstrap root, metadata URL, targets URL and state directory.
+An optional fifth fixture-package URL streams dummy bytes and verifies the signed
+catalog binding (nonzero length capped at 256 MiB and lowercase SHA-256). No package
+file is published or executed. The complete app catalog schema and download-to-temp
+publication/handoff are not implemented. It
 collects the complete bounded catalog stream before exposing JSON, and has a five-second
 cooperative timeout; this is not a hard wall-clock bound. File URLs and arbitrary fixture endpoints are deliberate test
 facilities. Production origin/redirect policy, atomic storage, cross-process locking,
@@ -84,3 +89,7 @@ No private key, installer, real release or remote server is used. Output is JSON
 redirect to an ignored file with a UTF-8-aware shell if it will be parsed elsewhere.
 It supports non-Windows timing but does not measure non-Windows memory. This does
 not measure integrated app size growth, TLS/proxy latency or a reused worker.
+
+The raw Windows measurement record predates package bindings and used a 26-byte
+catalog. Current fixtures include a package binding and produce a larger catalog;
+repeat measurements rather than assuming identical workload or binary size.

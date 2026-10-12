@@ -1,4 +1,5 @@
 //! Disposable verifier probe; not application update code or an installer launcher.
+mod package;
 use futures::TryStreamExt;
 use std::{error::Error, path::PathBuf, time::Duration};
 use tough::{RepositoryLoader, TargetName};
@@ -8,8 +9,10 @@ type Failure = Box<dyn Error + Send + Sync>;
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Failure> {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
-    if args.len() != 4 {
-        return Err("usage: tuf-spike ROOT METADATA_URL TARGETS_URL STATE_DIR".into());
+    if !(4..=5).contains(&args.len()) {
+        return Err(
+            "usage: tuf-spike ROOT METADATA_URL TARGETS_URL STATE_DIR [FIXTURE_PACKAGE_URL]".into(),
+        );
     }
     let state = PathBuf::from(&args[3]);
     std::fs::create_dir_all(&state)?;
@@ -50,6 +53,13 @@ async fn main() -> Result<(), Failure> {
         let chunks: Vec<_> = stream.try_collect().await?;
         let bytes: Vec<_> = chunks.into_iter().flatten().collect();
         let catalog: serde_json::Value = serde_json::from_slice(&bytes)?;
+        if let Some(package_url) = args.get(4) {
+            package::verify(
+                package_url.to_str().ok_or("invalid package URL")?.parse()?,
+                &catalog,
+            )
+            .await?;
+        }
         println!("{catalog}");
         Ok::<(), Failure>(())
     };

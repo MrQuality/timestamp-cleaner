@@ -99,10 +99,35 @@ impl Fixture {
     }
 
     pub async fn publish(&self, destination: &Path, generation: u64, expires: &str) {
+        let bytes = b"test-only package bytes; never execute";
+        std::fs::write(self.dir.path().join("fixture-package.bin"), bytes).unwrap();
+        let hash = aws_lc_rs::digest::digest(&aws_lc_rs::digest::SHA256, bytes);
+        let hex: String = hash
+            .as_ref()
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect();
+        let catalog = serde_json::json!({"version": "0.1.0-beta.2", "package": {"length": bytes.len(), "sha256": hex}});
+        self.publish_catalog(
+            destination,
+            generation,
+            expires,
+            &serde_json::to_vec(&catalog).unwrap(),
+        )
+        .await;
+    }
+
+    pub async fn publish_catalog(
+        &self,
+        destination: &Path,
+        generation: u64,
+        expires: &str,
+        bytes: &[u8],
+    ) {
         self.sign_root(None).await;
         let root_path = self.dir.path().join("root.json");
         let target = self.dir.path().join("catalog-v1.json");
-        std::fs::write(&target, br#"{"version":"0.1.0-beta.2"}"#).unwrap();
+        std::fs::write(&target, bytes).unwrap();
         let expiration: Timestamp = expires.parse().unwrap();
         let mut editor = RepositoryEditor::new(&root_path).await.unwrap();
         editor
@@ -138,7 +163,13 @@ impl Fixture {
     }
 
     pub fn probe_metadata_url(&self, destination: &Path, state: &Path, metadata: Url) -> Output {
-        std::process::Command::new(env!("CARGO_BIN_EXE_timestamp-cleaner-tuf-spike"))
+        self.command(destination, state, metadata).output().unwrap()
+    }
+
+    fn command(&self, destination: &Path, state: &Path, metadata: Url) -> std::process::Command {
+        let mut command =
+            std::process::Command::new(env!("CARGO_BIN_EXE_timestamp-cleaner-tuf-spike"));
+        command
             .arg(self.dir.path().join("root.json"))
             .arg(metadata.as_str())
             .arg(
@@ -146,9 +177,23 @@ impl Fixture {
                     .unwrap()
                     .as_str(),
             )
-            .arg(state)
-            .output()
-            .unwrap()
+            .arg(state);
+        command
+    }
+
+    pub fn probe_package(&self, destination: &Path, state: &Path) -> Output {
+        self.command(
+            destination,
+            state,
+            Url::from_directory_path(destination.join("metadata")).unwrap(),
+        )
+        .arg(
+            Url::from_file_path(self.dir.path().join("fixture-package.bin"))
+                .unwrap()
+                .as_str(),
+        )
+        .output()
+        .unwrap()
     }
 }
 

@@ -203,3 +203,60 @@ fn accept_fixture_connection(listener: &std::net::TcpListener) -> std::net::TcpS
 
 #[path = "support/publisher.rs"]
 mod publisher;
+
+#[tokio::test]
+async fn package_binding_rejects_changed_short_and_long_bytes() {
+    for damage in ["none", "changed", "short", "long"] {
+        let fixture = Fixture::new().await;
+        let server = fixture.dir.path().join("repository");
+        let state = fixture.dir.path().join("state");
+        fixture.publish(&server, 1, FUTURE).await;
+        let path = fixture.dir.path().join("fixture-package.bin");
+        let mut bytes = std::fs::read(&path).unwrap();
+        match damage {
+            "changed" => bytes[0] ^= 1,
+            "short" => {
+                bytes.pop();
+            }
+            "long" => bytes.push(0),
+            "none" => {}
+            _ => unreachable!(),
+        }
+        std::fs::write(path, bytes).unwrap();
+        let output = fixture.probe_package(&server, &state);
+        if damage == "none" {
+            require_success(output);
+        } else {
+            let message = require_failure(output);
+            assert!(
+                message.contains("package hash mismatch")
+                    || message.contains("package length mismatch"),
+                "{message}"
+            );
+        }
+    }
+}
+
+#[tokio::test]
+async fn signed_invalid_package_limits_fail_before_opening_package() {
+    for package in [
+        serde_json::json!({"length": 0, "sha256": "a".repeat(64)}),
+        serde_json::json!({"length": 268435457_u64, "sha256": "a".repeat(64)}),
+        serde_json::json!({"length": 10, "sha256": "INVALID"}),
+    ] {
+        let fixture = Fixture::new().await;
+        let server = fixture.dir.path().join("repository");
+        let catalog =
+            serde_json::to_vec(&serde_json::json!({"version": "0.1.0-beta.2", "package": package}))
+                .unwrap();
+        fixture.publish_catalog(&server, 1, FUTURE, &catalog).await;
+        // Package file deliberately absent. Signed catalog alone must not bypass bounds.
+        let message =
+            require_failure(fixture.probe_package(&server, &fixture.dir.path().join("state")));
+        assert!(
+            message.contains("package length exceeds spike policy")
+                || message.contains("invalid package SHA-256"),
+            "{message}"
+        );
+    }
+}

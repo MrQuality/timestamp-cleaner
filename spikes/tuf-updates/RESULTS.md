@@ -51,8 +51,28 @@ and the standard verifier accepts the same catalog. Production needs a narrow
 publisher command around this API, plus version allocation, authorization and
 freshness checks; do not upload offline keys to work around the CLI limitation.
 The explicit publisher test is excluded from the ordinary eight-test suite and
-must run with `--ignored` and the pinned tool path. A dedicated hosted publisher job
-is added; its results are pending for this increment.
+must run with `--ignored` and the pinned tool path. The dedicated hosted publisher job also passes in
+[run 38216595550](https://github.com/MrQuality/timestamp-cleaner/actions/runs/38216595550),
+alongside both verifier jobs. That run predates the package-binding increment.
+
+## Package-binding increment
+
+The probe now optionally streams a dummy package from a fifth CLI URL argument.
+Only after TUF catalog verification does it validate the declared nonzero length
+(maximum 256 MiB) and lowercase SHA-256. It counts and hashes bytes incrementally,
+rejects excess bytes immediately and rejects truncated/changed bytes at completion.
+No installer is persisted, published or executed. Two added ordinary tests exercise
+valid/changed/short/long data plus signed zero/oversized/malformed bindings against
+fresh verifier processes. Removing the hash comparison makes the tampering test
+fail because altered bytes are accepted; the comparison is restored afterwards.
+The prior dependency graph/lock is unchanged: AWS-LC was already used transitively
+and by fixtures, and is now a direct runtime dependency of the isolated probe.
+
+This is a byte-integrity experiment, not the application catalog schema, protected
+package origin policy or transactional installer downloader. Those remain gates.
+The current ordinary suite has ten functional tests; the publisher ceremony is an
+explicit separately run test. Hosted results above are historical evidence for
+their stated commits, not confirmation of unpushed or later changes.
 
 ## Local release-probe measurements
 
