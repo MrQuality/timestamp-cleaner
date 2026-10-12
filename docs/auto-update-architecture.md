@@ -1,7 +1,8 @@
 # ADR: authenticated updates with side-by-side installation
 
-Status: proposed architecture, 2026-10-11; documentation only. Requirements were
-accepted in PR #12. No updater, signing key or publication infrastructure is deployed.
+Status: architectural direction accepted by the owner on 2026-10-12; feasibility
+and implementation remain pending. Requirements were accepted in PR #12. No updater,
+signing key or publication infrastructure is deployed.
 Scope: Windows x64 installed builds; portable/source builds receive notifications
 and a manual download handoff. See [requirements](reporting-and-updates.md).
 

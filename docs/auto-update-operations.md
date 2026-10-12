@@ -118,6 +118,20 @@ updater to downgrade or to migrate future project files backwards.
 
 ## Implementation slices and release gates
 
+The owner accepted the direction on 2026-10-12. The next deliverable is a disposable
+TUF proof of concept and a dated go/no-go report, before application integration.
+Use generated test-only keys and a local test repository; no production secrets or
+real installer execution are needed. The report must record the pinned dependency
+versions/lock, Windows and Rust 1.92 results, dependency audit/license findings,
+binary-size/runtime-memory measurements and any unresolved integration limits.
+Demonstrate successful catalog verification across process restarts and root rotation,
+then rejection of expired metadata, rollback, tampered catalog/package bytes and
+interrupted transfers. Explicitly test metadata renewal for the same application
+version: a release remaining current for a year must not require an app rebuild.
+Expired update metadata must disable update handoff without disabling video work.
+If the spike passes, proceed to the policy/notification slice; if it fails, record
+the evidence and revisit the architecture rather than weaken verification.
+
 1. Compatibility spike: pin candidate `tough`/`tuftool`; validate Rust 1.92, platform
    support, licenses/audit, transport injection, cancellation, persistent root handling
    and binary/runtime cost. Stop for design review if this fails; do not quietly
